@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Karmac Dashboard
+Comment=Everything you need. Nothing you don't.
+Exec=bash -c 'source ~/karmac-env/bin/activate && python3 ~/Karmac-dashboard/src/main.py'
+Icon=~/Karmac-dashboard/assets/Karmac_Logo.svg
+Categories=Utility;System;
+Terminal=false
+StartupNotify=true
