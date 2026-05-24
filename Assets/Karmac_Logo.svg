@@ -1,0 +1,57 @@
+<svg width="100%" viewBox="0 0 680 680" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Karmac Dashboard logo</title>
+  <desc>A professional circular gauge with four equal-length color arc segments, precisely placed tick marks, a sharp needle, and a clean geometric K</desc>
+
+  <style>
+    .bg { fill: #0d0d1f; }
+    .ring1 { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 1.5; }
+    .ring2 { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 1; }
+    .tick-maj { stroke: #ffffff; stroke-width: 4; stroke-linecap: round; }
+    .tick-min { stroke: rgba(255,255,255,0.45); stroke-width: 2.5; stroke-linecap: round; }
+  </style>
+
+  <circle cx="340" cy="340" r="300" class="bg"/>
+  <circle cx="340" cy="340" r="298" class="ring1"/>
+  <circle cx="340" cy="340" r="252" class="ring2"/>
+
+  <!-- Blue: 120° → 194° -->
+  <path d="M 229,532 A 222,222 0 0 1 124.6,286.3"
+        fill="none" stroke="#4361ee" stroke-width="28" stroke-linecap="round"/>
+  <!-- Green: 195° → 269° -->
+  <path d="M 123.8,282.6 A 222,222 0 0 1 336.1,118"
+        fill="none" stroke="#06d6a0" stroke-width="28" stroke-linecap="round"/>
+  <!-- Amber: 270° → 344° -->
+  <path d="M 340,118 A 222,222 0 0 1 553.3,278.8"
+        fill="none" stroke="#ffbe0b" stroke-width="28" stroke-linecap="round"/>
+  <!-- Red: 345° → 59° -->
+  <path d="M 554,282.4 A 222,222 0 0 1 454.2,530.3"
+        fill="none" stroke="#ff4d6d" stroke-width="28" stroke-linecap="round"/>
+
+  <!-- Major ticks — exact coordinates calculated from angles -->
+  <line x1="111.0" y1="282.9" x2="144.0" y2="291.1" class="tick-maj"/>
+  <line x1="335.9" y1="104.0" x2="336.5" y2="138.0" class="tick-maj"/>
+  <line x1="566.9" y1="274.9" x2="534.2" y2="284.3" class="tick-maj"/>
+
+  <!-- Minor ticks — exact coordinates calculated from angles -->
+  <line x1="122.8" y1="432.2" x2="146.7" y2="422.1" class="tick-min"/>
+  <line x1="194.7" y1="154.0" x2="210.7" y2="174.5" class="tick-min"/>
+  <line x1="482.0" y1="151.5" x2="466.4" y2="172.3" class="tick-min"/>
+  <line x1="558.8" y1="428.4" x2="534.7" y2="418.7" class="tick-min"/>
+
+  <!-- Needle -->
+  <g transform="rotate(50 340 340)">
+    <polygon points="340,158 335,335 340,352 345,335" fill="white"/>
+  </g>
+
+  <!-- Center hub -->
+  <circle cx="340" cy="340" r="34" fill="#0d0d1f" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+  <circle cx="340" cy="340" r="24" fill="#ff4d6d"/>
+  <circle cx="340" cy="340" r="11" fill="white"/>
+
+  <!-- Clean geometric K -->
+  <g transform="translate(322, 468)">
+    <rect x="0" y="0" width="10" height="72" rx="3" fill="white"/>
+    <path d="M 10 34 L 46 0" fill="none" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 10 34 L 46 72" fill="none" stroke="white" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>
