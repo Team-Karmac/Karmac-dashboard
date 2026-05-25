@@ -50,13 +50,17 @@ def format_vram(bytes_val: int) -> str:
     return f"{bytes_val / (1024 ** 2):.0f} MB"
 
 
-def usage_color(pct: float) -> str:
-    if pct >= 90:
-        return "#ff4d6d"
-    elif pct >= 70:
-        return "#ffd000"
+GREEN  = "#06d6a0"
+YELLOW = "#ffd000"
+RED    = "#ff4d6d"
+
+def usage_color(pct: float, warning: float = 70, critical: float = 90) -> str:
+    if pct >= critical:
+        return RED
+    elif pct >= warning:
+        return YELLOW
     else:
-        return "#c77dff"
+        return GREEN
 
 
 class GpuUsagePanel(BasePanel):
@@ -106,7 +110,10 @@ class GpuUsagePanel(BasePanel):
             return
 
         pct = info["usage"]
-        color = usage_color(pct)
+        gpu_cfg = self.settings._data.get("gpu", {})
+        warn = gpu_cfg.get("warning", 70)
+        crit = gpu_cfg.get("critical", 90)
+        color = usage_color(pct, warn, crit)
 
         self._usage_label.setText(f"{pct}%")
         self._usage_label.setStyleSheet(f"color: {color}; font-size: 34px; font-weight: 300;")
