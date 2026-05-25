@@ -31,6 +31,8 @@ sys.excepthook = handle_exception
 
 
 from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QIcon
+from pathlib import Path
 from karmac.window import KarmacWindow
 from karmac.settings import Settings
 
@@ -38,8 +40,13 @@ from karmac.settings import Settings
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName("Karmac Dashboard")
-    app.setApplicationVersion("2.0.0")
+    app.setApplicationVersion("3.0.0")
     app.setOrganizationName("Team Karmac")
+
+    # Set app icon
+    icon_path = Path.home() / ".local" / "share" / "icons" / "Karmac_Logo.png"
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
 
     settings = Settings()
 
