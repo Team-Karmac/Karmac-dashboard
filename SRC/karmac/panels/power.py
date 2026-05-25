@@ -57,13 +57,17 @@ def get_gpu_power() -> float:
     return 0.0
 
 
-def power_color(watts: float, warning: float = 100, critical: float = 200) -> str:
+GREEN  = "#06d6a0"
+YELLOW = "#ffd000"
+RED    = "#ff4d6d"
+
+def power_color(watts: float, warning: float = 150, critical: float = 250) -> str:
     if watts >= critical:
-        return "#ff4d6d"
+        return RED
     elif watts >= warning:
-        return "#ffd000"
+        return YELLOW
     else:
-        return "#00b4d8"
+        return GREEN
 
 
 class PowerPanel(BasePanel):
@@ -153,7 +157,10 @@ class PowerPanel(BasePanel):
 
         if total > 0:
             self._total_label.setText(f"{total} W")
-            color = power_color(total)
+            power_cfg = self.settings._data.get("power", {})
+            warn = power_cfg.get("warning", 150)
+            crit = power_cfg.get("critical", 250)
+            color = power_color(total, warn, crit)
             self._total_label.setStyleSheet(f"color: {color}; font-size: 34px; font-weight: 300;")
         else:
             self._total_label.setText("-- W")
