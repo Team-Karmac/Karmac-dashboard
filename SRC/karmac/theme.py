@@ -16,7 +16,7 @@ COLORS = {
         "text_muted":       "rgba(240, 240, 255, 0.28)",
         "accent_blue":      "#4361ee",
         "accent_green":     "#06d6a0",
-        "accent_amber":     "#ffbe0b",
+        "accent_amber":     "#ffd000",
         "accent_red":       "#ff4d6d",
         "scrollbar":        "rgba(255, 255, 255, 0.08)",
         "scrollbar_hover":  "rgba(255, 255, 255, 0.16)",
@@ -33,7 +33,7 @@ COLORS = {
         "text_muted":       "rgba(13, 13, 31, 0.32)",
         "accent_blue":      "#4361ee",
         "accent_green":     "#06b887",
-        "accent_amber":     "#d4a000",
+        "accent_amber":     "#c8a800",
         "accent_red":       "#e8003d",
         "scrollbar":        "rgba(0, 0, 0, 0.08)",
         "scrollbar_hover":  "rgba(0, 0, 0, 0.16)",
@@ -183,7 +183,7 @@ def get_stylesheet(theme: str, font_size: str = 'medium') -> str:
     }}
 
     #version-label {{
-        color: {c['text_muted']};
+        color: {c['text_primary']};
         font-size: 10px;
         letter-spacing: 0.08em;
     }}
