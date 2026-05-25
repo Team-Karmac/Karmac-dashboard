@@ -1,13 +1,11 @@
 # Karmac Dashboard
-### Project Specification v0.1
-
-![Karmac Logo](Karmac_Logo.svg)
+### Project Specification v0.3
 
 ---
 
 ## What is Karmac?
 
-Karmac is a free and open source desktop dashboard application for Linux. It gives everyday users a single, beautiful, organized view of their system's health and key personal information — without requiring technical knowledge to set up or use.
+Karmac is a free and open source desktop dashboard application for Linux. It gives everyday users a single, beautiful, organized view of their system's health and key personal information — without requiring any technical knowledge to set up or use.
 
 Karmac is built on a simple belief: Linux desktop users deserve a polished, privacy-respecting dashboard that works for everyone, not just developers and power users.
 
@@ -63,29 +61,108 @@ Karmac can be configured to:
 
 ### Layout
 - Fully customizable — users can rearrange, resize, show, or hide any panel
+- Three column grid layout across four rows
 - Designed to look great out of the box with sensible defaults
 - No configuration files required; everything is managed through the app's settings interface
 
+### Sidebar
+- Displays full hardware information alongside navigation
+- Hardware section includes: CPU, GPU, motherboard, OS, kernel, desktop environment, RAM, storage, and display details
+
 ---
 
-## Dashboard Panels (v1.0)
+## Dashboard Panels (v2.0)
 
-The following five panels are included in the first release. All panels can be toggled and repositioned by the user.
+All panels can be toggled and repositioned by the user. Each panel has a unique accent color for instant visual identification.
 
-### Clock & Date
-Displays the current time and date. Supports 12-hour and 24-hour formats.
+### Row 1 — Personal & Connectivity
+| Panel | Color | Description |
+|-------|-------|-------------|
+| Clock & Calendar | Blue | Time, date, and mini calendar with today highlighted |
+| Weather | Green | Current conditions, high/low, humidity, wind, and 3-day forecast |
+| Network | Purple | Live upload/download speeds, ping/latency, and internet speed test |
+
+### Row 2 — Thermal & Processing
+| Panel | Color | Description |
+|-------|-------|-------------|
+| Temperature | Orange | CPU and GPU temperatures — Celsius, Fahrenheit, or both |
+| Fan Speeds | Yellow | RPM readings grouped by hardware chip with Zero RPM detection |
+| CPU Cores | Pink | Overall usage, per-core activity, and per-core frequency |
+
+### Row 3 — Memory & Storage
+| Panel | Color | Description |
+|-------|-------|-------------|
+| System Uptime | Red | Time since last boot |
+| RAM Usage | Aquamarine | Used/available memory with percentage |
+| Hard Drives | Lime | Space used/free for all detected drives |
+
+### Row 4 — Power & Graphics
+| Panel | Color | Description |
+|-------|-------|-------------|
+| GPU Usage | Light Violet | AMD GPU load %, VRAM usage, and power draw |
+| Power Usage | Cyan | CPU package and GPU power consumption in watts |
+| FPS | Coral | Live FPS, frametime, CPU/GPU load via MangoHud integration |
+
+---
+
+## Color Palette
+
+| Panel | Color | Hex |
+|-------|-------|-----|
+| Clock | Blue | #4361ee |
+| Weather | Green | #06d6a0 |
+| Fan Speeds | Yellow | #ffd000 |
+| Network | Purple | #9b5de5 |
+| System Uptime | Red | #ff4d6d |
+| CPU/GPU Temperature | Orange | #ff6d00 |
+| RAM Usage | Aquamarine | #00f5d4 |
+| Hard Drive Space | Lime | #b5e800 |
+| CPU Core Activity | Pink | #ff006e |
+| Hardware Brand & Specs | Brown | #c17c3a |
+| GPU Usage | Light Violet | #c77dff |
+| Power Usage | Cyan | #00b4d8 |
+| FPS | Coral | #ff6b6b |
+
+---
+
+## Settings
+
+### Appearance
+- Theme (Dark / Light)
+- Font Size (Small / Medium / Large)
+
+### Panels
+- Enable/disable individual panels
+- Changes take effect after restarting Karmac
+
+### Clock
+- 12/24-hour format
+- Show/hide seconds
+- Date format (Long / Short / ISO)
+- Timezone selection
 
 ### Weather
-Displays current local weather conditions including temperature, conditions, and forecast. Location set by the user in settings.
+- Location search
+- Temperature units (Celsius / Fahrenheit)
+
+### Network
+- Ping host configuration
 
 ### Fan Speeds
-Displays active fan speeds in RPM for all detected system fans, labeled by their hardware identifier.
+- Warning RPM threshold
+- Critical RPM threshold
+- Custom fan labels
 
-### Network Status
-Displays current upload and download speeds, connection type, and network name.
+### Temperature
+- Display format (Celsius only / Fahrenheit only / Both)
+- Warning threshold (°C)
+- Critical threshold (°C)
 
-### System Uptime
-Displays how long the system has been running since last boot.
+### Hard Drives
+- Show/hide individual drives
+
+### Startup
+- Launch Karmac automatically on login
 
 ---
 
@@ -105,7 +182,7 @@ Karmac launches in English. Additional language translations are welcomed and en
 
 ---
 
-## Technical Notes (for developers)
+## Technical Notes
 
 - Standalone desktop application targeting Linux
 - Written in Python
@@ -113,36 +190,15 @@ Karmac launches in English. Additional language translations are welcomed and en
 - No external server or hosting dependency
 - All data is read locally from the system
 - Weather data sourced from Open-Meteo (free, open source, no API key required)
-- Fully open source; primary repository hosted on GitLab *(to be set up)*, mirrored to GitHub for visibility
+- FPS data sourced from MangoHud log files
+- Power monitoring via RAPL interface
+- Fully open source; primary repository hosted on GitLab, mirrored to GitHub for visibility
 - Licensed under GNU General Public License v3 (GPL v3)
+- Crash logging to ~/.config/karmac/karmac.log
 
 ---
 
 ## Future Considerations
-
-### Planned for v2.0
-The following panels were scoped out of v1.0 to keep the first release achievable, and are the priority for the next release:
-
-**CPU & GPU Temperature** — Accent: Orange
-- Displays temperature in both Celsius and Fahrenheit (user selects in Settings)
-- Color-coded indicators: green (normal), yellow (warning), red (critical)
-
-**RAM Usage** — Accent: Aquamarine
-- Shows used vs total RAM with a visual usage bar
-- Updates in real time
-
-**Hard Drive Space** — Accent: Lime
-- Shows all detected drives by default
-- Settings option to show/hide individual drives
-- Displays used, available, and total space with a visual bar
-
-**CPU Core Activity** — Accent: Pink
-- Shows overall CPU usage percentage and individual core breakdown
-- Updates every second
-
-**Hardware Brand & Specs** — Accent: Brown
-- Dedicated information panel showing CPU brand/model, GPU brand/model, total RAM, total storage
-- Reads from system at launch
 
 ### Longer Term
 Additional features that may be considered based on community feedback:
@@ -154,37 +210,21 @@ Additional features that may be considered based on community feedback:
 - Battery status (for laptop users)
 - Additional language packs
 - Community-contributed themes
+- NVIDIA GPU support improvements
 
 ---
 
 ## Project Identity
 
-**Color Palette:**
-
-| Panel | Color | Hex |
-|-------|-------|-----|
-| Clock | Blue | #4361ee |
-| Weather | Green | #06d6a0 |
-| Fan Speeds | Yellow | #ffd000 |
-| Network | Purple | #9b5de5 |
-| System Uptime | Red | #ff4d6d |
-| CPU/GPU Temperature | Orange | #ff6d00 |
-| RAM Usage | Aquamarine | #00f5d4 |
-| Hard Drive Space | Lime | #b5e800 |
-| CPU Core Activity | Pink | #ff006e |
-| Hardware Brand & Specs | Brown | #c17c3a |
+**Name:** Karmac Dashboard
+**Tagline:** Everything you need. Nothing you don't.
+**Made by:** Team Karmac
+**License:** GNU General Public License v3 (GPL v3)
+**Primary Repository:** GitLab — gitlab.com/team.karmac1/Karmac-dashboard
+**Mirror:** GitHub — github.com/Team-Karmac/Karmac-dashboard
+**Community:** GitLab Issues & Discussions *(primary)*, Matrix *(real-time chat, to be added when community grows)*
 
 ---
 
-**Name:** Karmac Dashboard  
-**Tagline:** Everything you need. Nothing you don't.  
-**Made by:** Team Karmac  
-**License:** GNU General Public License v3 (GPL v3)  
-**Primary Repository:** GitLab *(to be set up)*  
-**Mirror:** GitHub *(to be set up)*  
-**Community:** GitLab Issues & Discussions *(primary)*, Matrix *(real-time chat, to be added when community grows)*  
-
----
-
-*This document is a living specification. It will be updated as the project evolves.*  
-*Version 0.2 — May 2026*
+*This document is a living specification. It will be updated as the project evolves.*
+*Version 0.3 — May 2026*
