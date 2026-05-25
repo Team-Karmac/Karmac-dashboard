@@ -23,6 +23,9 @@ DEFAULT_SETTINGS = {
         "gpu_usage":   {"enabled": True,  "position": 10},
         "power":       {"enabled": True,  "position": 11},
         "fps":         {"enabled": True,  "position": 12},
+        "net_traffic": {"enabled": True,  "position": 13},
+        "processes":   {"enabled": True,  "position": 14},
+        "disk_io":     {"enabled": True,  "position": 15},
         "temperature": {"enabled": True,  "position": 5},
         "uptime":      {"enabled": True,  "position": 6},
     },
@@ -50,13 +53,45 @@ DEFAULT_SETTINGS = {
         "warning":  70,
         "critical": 90,
     },
+    "cpu": {
+        "warning":  70,
+        "critical": 90,
+    },
+    "ram": {
+        "warning":  75,
+        "critical": 90,
+    },
+    "gpu": {
+        "warning":  70,
+        "critical": 90,
+    },
+    "power": {
+        "warning":  150,
+        "critical": 250,
+    },
+    "drives_thresholds": {
+        "warning":  75,
+        "critical": 90,
+    },
     "network": {
-        "interface":  "auto",
-        "speed_unit": "auto",
-        "ping_host":  "8.8.8.8",
+        "interface":    "auto",
+        "speed_unit":   "auto",
+        "ping_host":    "9.9.9.9",  # Quad9 — privacy-focused, non-profit DNS
+        "traffic_count": 5,
     },
     "drives": {
         "hidden": [],
+    },
+    "processes": {
+        "count":          5,
+        "cpu_warning":    50,
+        "cpu_critical":   80,
+        "mem_warning_mb": 512,
+        "mem_critical_mb":2048,
+    },
+    "fps": {
+        "warning":  60,
+        "critical": 30,
     },
     "window": {
         "width":  1100,
