@@ -101,7 +101,7 @@ class FanSpeedsPanel(BasePanel):
     """Displays RPM readings for all detected system fans, grouped by chip."""
 
     REFRESH_INTERVAL = 3000
-    ACCENT_COLOR = "#ffbe0b"
+    ACCENT_COLOR = "#ffd000"
 
     def __init__(self, settings: Settings, parent=None):
         self._fan_widgets = []
@@ -191,7 +191,7 @@ class FanSpeedsPanel(BasePanel):
             color = "#06d6a0"
         elif rpm < rpm_critical:
             display = f"{rpm:,} RPM"
-            color = "#ffbe0b"
+            color = "#ffd000"
         else:
             display = f"{rpm:,} RPM"
             color = "#ff4d6d"
