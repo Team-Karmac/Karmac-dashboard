@@ -74,3 +74,36 @@
 - Desktop launcher support
 - GPL v3 licensed
 - GitLab primary repository with GitHub mirror
+
+---
+
+## v3.0.0 — May 2026
+
+### New Panels
+- **Network Traffic** — Per-process bandwidth monitoring via nethogs (requires sudo)
+- **Process Monitor** — Top processes by CPU or RAM with toggleable sort, friendly process names, and color-coded thresholds
+- **Disk I/O** — Real-time NVMe/SSD read/write speeds via psutil
+
+### Color System Overhaul
+- All panels now use universal green/yellow/red traffic light system for data values
+- Panel accent colors reserved for title bars only
+- Green = normal, Yellow = warning, Red = critical
+
+### Configurable Thresholds
+- CPU usage warning/critical thresholds
+- RAM usage warning/critical thresholds
+- GPU usage warning/critical thresholds
+- Power usage warning/critical thresholds (watts)
+- FPS warning/critical thresholds (inverted — lower is worse)
+- All configurable in Settings
+
+### Privacy
+- Default ping host changed from Google (8.8.8.8) to Quad9 (9.9.9.9) — non-profit, privacy-focused
+- Privacy notes added to Settings for speed test (Ookla) and ping host
+- Full privacy documentation added to README
+- Complete audit of all outbound connections documented
+
+### General
+- Taskbar icon now shows Karmac logo instead of generic gear
+- Version bumped to 3.0.0
+- nethogs added to system dependencies for network traffic monitoring
