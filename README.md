@@ -4,9 +4,9 @@
 
 Karmac is a free and open source desktop dashboard for Linux. It gives everyday users a beautiful, organized view of their system and personal information — without requiring any technical knowledge to set up or use.
 
-![Karmac Dashboard](assets/Karmac_Logo.svg)
+![Karmac Dashboard](Assets/Karmac_Logo.svg)
 
-![Karmac Dashboard Screenshot](assets/screenshot.png)
+![Karmac Dashboard Screenshot](Assets/screenshot.png)
 
 ---
 
