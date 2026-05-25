@@ -123,11 +123,26 @@ Karmac launches in English. Additional language translations are welcomed and en
 ### Planned for v2.0
 The following panels were scoped out of v1.0 to keep the first release achievable, and are the priority for the next release:
 
-- CPU & GPU Temperature monitoring
-- RAM Usage display
-- Hard Drive Space monitoring
-- CPU Core Activity display
-- Hardware Brand & Specs Display
+**CPU & GPU Temperature** — Accent: Orange
+- Displays temperature in both Celsius and Fahrenheit (user selects in Settings)
+- Color-coded indicators: green (normal), yellow (warning), red (critical)
+
+**RAM Usage** — Accent: Aquamarine
+- Shows used vs total RAM with a visual usage bar
+- Updates in real time
+
+**Hard Drive Space** — Accent: Lime
+- Shows all detected drives by default
+- Settings option to show/hide individual drives
+- Displays used, available, and total space with a visual bar
+
+**CPU Core Activity** — Accent: Pink
+- Shows overall CPU usage percentage and individual core breakdown
+- Updates every second
+
+**Hardware Brand & Specs** — Accent: Brown
+- Dedicated information panel showing CPU brand/model, GPU brand/model, total RAM, total storage
+- Reads from system at launch
 
 ### Longer Term
 Additional features that may be considered based on community feedback:
@@ -144,6 +159,23 @@ Additional features that may be considered based on community feedback:
 
 ## Project Identity
 
+**Color Palette:**
+
+| Panel | Color | Hex |
+|-------|-------|-----|
+| Clock | Blue | #4361ee |
+| Weather | Green | #06d6a0 |
+| Fan Speeds | Yellow | #ffd000 |
+| Network | Purple | #9b5de5 |
+| System Uptime | Red | #ff4d6d |
+| CPU/GPU Temperature | Orange | #ff6d00 |
+| RAM Usage | Aquamarine | #00f5d4 |
+| Hard Drive Space | Lime | #b5e800 |
+| CPU Core Activity | Pink | #ff006e |
+| Hardware Brand & Specs | Brown | #c17c3a |
+
+---
+
 **Name:** Karmac Dashboard  
 **Tagline:** Everything you need. Nothing you don't.  
 **Made by:** Team Karmac  
@@ -155,4 +187,4 @@ Additional features that may be considered based on community feedback:
 ---
 
 *This document is a living specification. It will be updated as the project evolves.*  
-*Version 0.1 — May 2026*
+*Version 0.2 — May 2026*
