@@ -23,6 +23,9 @@ from karmac.panels.hardware import HardwarePanel, get_cpu_name, get_gpu_name, ge
 from karmac.panels.gpu_usage import GpuUsagePanel
 from karmac.panels.power import PowerPanel
 from karmac.panels.fps import FpsPanel
+from karmac.panels.net_traffic import NetTrafficPanel
+from karmac.panels.processes import ProcessesPanel
+from karmac.panels.disk_io import DiskIoPanel
 from karmac.settings_view import SettingsView
 
 import os
@@ -187,7 +190,7 @@ class KarmacWindow(QMainWindow):
         layout.addStretch()
 
         # Version
-        ver = QLabel("V 2.0.0")
+        ver = QLabel("V 3.0.0")
         ver.setObjectName("version-label")
         ver.setAlignment(Qt.AlignCenter)
         layout.addWidget(ver)
@@ -299,6 +302,9 @@ class KarmacWindow(QMainWindow):
             "gpu_usage":   GpuUsagePanel,
             "power":       PowerPanel,
             "fps":         FpsPanel,
+            "net_traffic": NetTrafficPanel,
+            "processes":   ProcessesPanel,
+            "disk_io":     DiskIoPanel,
         }
 
         panel_order = sorted(
