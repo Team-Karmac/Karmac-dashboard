@@ -45,21 +45,25 @@ def get_cpu_info() -> dict:
         return {"success": False, "error": str(e)}
 
 
-def usage_color(pct: float) -> str:
-    if pct >= 90:
-        return "#ff4d6d"
-    elif pct >= 70:
-        return "#ffd000"
+GREEN  = "#06d6a0"
+YELLOW = "#ffd000"
+RED    = "#ff4d6d"
+
+def usage_color(pct: float, warning: float = 70, critical: float = 90) -> str:
+    if pct >= critical:
+        return RED
+    elif pct >= warning:
+        return YELLOW
     else:
-        return "#ff006e"
+        return GREEN
 
 
 def freq_color(ghz: float) -> str:
     """Color based on frequency — higher = warmer color."""
     if ghz >= 4.0:
-        return "#ff4d6d"
+        return RED
     elif ghz >= 3.5:
-        return "#ffd000"
+        return YELLOW
     else:
         return "rgba(240,240,255,0.45)"
 
@@ -122,8 +126,11 @@ class CpuCoresPanel(BasePanel):
             return
 
         overall = info["overall"]
+        cpu_cfg = self.settings._data.get("cpu", {})
+        warn = cpu_cfg.get("warning", 70)
+        crit = cpu_cfg.get("critical", 90)
         self._overall_label.setText(f"{overall:.0f}%")
-        self._overall_label.setStyleSheet(f"color: {usage_color(overall)}; font-size: 28px; font-weight: 300;")
+        self._overall_label.setStyleSheet(f"color: {usage_color(overall, warn, crit)}; font-size: 28px; font-weight: 300;")
 
         if info["freq_mhz"]:
             ghz = info["freq_mhz"] / 1000
@@ -155,7 +162,10 @@ class CpuCoresPanel(BasePanel):
                 core_pct = QLabel(f"{pct:.0f}%")
                 core_pct.setObjectName("panel-unit")
                 core_pct.setFixedWidth(32)
-                core_pct.setStyleSheet(f"color: {usage_color(pct)};")
+                cpu_cfg = self.settings._data.get("cpu", {})
+                warn = cpu_cfg.get("warning", 70)
+                crit = cpu_cfg.get("critical", 90)
+                core_pct.setStyleSheet(f"color: {usage_color(pct, warn, crit)};")
 
                 # Core frequency
                 freq_val = f"{freq:.1f}" if freq else "--"
