@@ -110,7 +110,13 @@ class SettingsView(QWidget):
         layout.addWidget(self._build_network_section())
         layout.addWidget(self._build_fans_section())
         layout.addWidget(self._build_temperature_section())
+        layout.addWidget(self._build_cpu_thresholds_section())
+        layout.addWidget(self._build_ram_thresholds_section())
+        layout.addWidget(self._build_gpu_thresholds_section())
+        layout.addWidget(self._build_power_thresholds_section())
+        layout.addWidget(self._build_fps_thresholds_section())
         layout.addWidget(self._build_drives_section())
+        layout.addWidget(self._build_processes_section())
         layout.addWidget(self._build_startup_section())
         layout.addStretch()
 
@@ -154,6 +160,9 @@ class SettingsView(QWidget):
             "gpu_usage":   "GPU Usage",
             "power":       "Power Usage",
             "fps":         "FPS",
+            "net_traffic": "Network Traffic",
+            "processes":   "Process Monitor",
+            "disk_io":     "Disk I/O",
         }
 
         self._panel_checks = {}
@@ -258,8 +267,29 @@ class SettingsView(QWidget):
         layout.addWidget(self._ping_host_input)
         layout.addWidget(save_btn)
 
+        # Privacy note for ping host
+        ping_note = QLabel("Default: 9.9.9.9 (Quad9 — privacy-focused, non-profit)")
+        ping_note.setStyleSheet("color: rgba(240,240,255,0.3); font-size: 10px; font-style: italic;")
+        ping_note.setWordWrap(True)
+        section.add_widget(ping_note)
         section.add_widget(make_row("Ping Host", QLabel("")))
         section.add_widget(row)
+
+        # Traffic count
+        self._traffic_count_spin = QSpinBox()
+        self._traffic_count_spin.setRange(3, 8)
+        self._traffic_count_spin.setValue(self.settings._data.get("network", {}).get("traffic_count", 5))
+        self._traffic_count_spin.setSuffix(" apps")
+        self._traffic_count_spin.setMinimumWidth(100)
+        self._traffic_count_spin.valueChanged.connect(self._on_traffic_count_changed)
+        section.add_widget(make_row("Traffic Monitor Apps", self._traffic_count_spin))
+
+        # Speed test privacy note
+        speed_note = QLabel("⚠ Speed Test connects to Ookla servers (speedtest.net). Only runs when you click Run Test.")
+        speed_note.setStyleSheet("color: rgba(255,200,0,0.6); font-size: 10px;")
+        speed_note.setWordWrap(True)
+        section.add_widget(speed_note)
+
         return section
 
     def _build_fans_section(self) -> QWidget:
@@ -340,6 +370,87 @@ class SettingsView(QWidget):
 
         return section
 
+    def _make_threshold_section(self, title: str, color: str, cfg_key: str,
+                                  warn_key: str, crit_key: str,
+                                  warn_default: float, crit_default: float,
+                                  suffix: str = "") -> QWidget:
+        section = SettingSection(title, color)
+
+        warn_spin = QSpinBox()
+        warn_spin.setRange(1, 10000)
+        warn_spin.setValue(int(self.settings._data.get(cfg_key, {}).get(warn_key, warn_default)))
+        warn_spin.setSuffix(suffix)
+        warn_spin.setMinimumWidth(120)
+        warn_spin.valueChanged.connect(lambda v, k=cfg_key, wk=warn_key: self._on_threshold_changed(k, wk, v))
+        section.add_widget(make_row("⚠ Warning Threshold", warn_spin))
+
+        crit_spin = QSpinBox()
+        crit_spin.setRange(1, 10000)
+        crit_spin.setValue(int(self.settings._data.get(cfg_key, {}).get(crit_key, crit_default)))
+        crit_spin.setSuffix(suffix)
+        crit_spin.setMinimumWidth(120)
+        crit_spin.valueChanged.connect(lambda v, k=cfg_key, ck=crit_key: self._on_threshold_changed(k, ck, v))
+        section.add_widget(make_row("🔴 Critical Threshold", crit_spin))
+
+        return section
+
+    def _on_threshold_changed(self, cfg_key: str, threshold_key: str, value: int):
+        cfg = dict(self.settings._data.get(cfg_key, {}))
+        cfg[threshold_key] = value
+        self.settings._data[cfg_key] = cfg
+        self.settings.save()
+
+    def _build_cpu_thresholds_section(self) -> QWidget:
+        return self._make_threshold_section(
+            "CPU Thresholds", "#ff006e", "cpu",
+            "warning", "critical", 70, 90, "%"
+        )
+
+    def _build_ram_thresholds_section(self) -> QWidget:
+        return self._make_threshold_section(
+            "RAM Thresholds", "#00f5d4", "ram",
+            "warning", "critical", 75, 90, "%"
+        )
+
+    def _build_gpu_thresholds_section(self) -> QWidget:
+        return self._make_threshold_section(
+            "GPU Thresholds", "#c77dff", "gpu",
+            "warning", "critical", 70, 90, "%"
+        )
+
+    def _build_power_thresholds_section(self) -> QWidget:
+        return self._make_threshold_section(
+            "Power Thresholds", "#00b4d8", "power",
+            "warning", "critical", 150, 250, "W"
+        )
+
+    def _build_fps_thresholds_section(self) -> QWidget:
+        section = SettingSection("FPS Thresholds", "#ff6b6b")
+
+        hint = QLabel("FPS thresholds are inverted — lower FPS is worse.")
+        hint.setObjectName("panel-unit")
+        hint.setStyleSheet("color: rgba(240,240,255,0.3); font-style: italic;")
+        hint.setWordWrap(True)
+        section.add_widget(hint)
+
+        warn_spin = QSpinBox()
+        warn_spin.setRange(1, 500)
+        warn_spin.setValue(int(self.settings._data.get("fps", {}).get("warning", 60)))
+        warn_spin.setSuffix(" fps")
+        warn_spin.setMinimumWidth(120)
+        warn_spin.valueChanged.connect(lambda v: self._on_threshold_changed("fps", "warning", v))
+        section.add_widget(make_row("⚠ Warning Below", warn_spin))
+
+        crit_spin = QSpinBox()
+        crit_spin.setRange(1, 500)
+        crit_spin.setValue(int(self.settings._data.get("fps", {}).get("critical", 30)))
+        crit_spin.setSuffix(" fps")
+        crit_spin.setMinimumWidth(120)
+        crit_spin.valueChanged.connect(lambda v: self._on_threshold_changed("fps", "critical", v))
+        section.add_widget(make_row("🔴 Critical Below", crit_spin))
+
+        return section
+
     def _build_drives_section(self) -> QWidget:
         section = SettingSection("Hard Drives", "#b5e800")
 
@@ -376,6 +487,19 @@ class SettingsView(QWidget):
                 section.add_widget(cb)
         except Exception:
             section.add_widget(QLabel("No drives detected"))
+
+        return section
+
+    def _build_processes_section(self) -> QWidget:
+        section = SettingSection("Process Monitor", "#e040fb")
+
+        self._proc_count_spin = QSpinBox()
+        self._proc_count_spin.setRange(3, 10)
+        self._proc_count_spin.setValue(self.settings._data.get("processes", {}).get("count", 5))
+        self._proc_count_spin.setSuffix(" processes")
+        self._proc_count_spin.setMinimumWidth(130)
+        self._proc_count_spin.valueChanged.connect(self._on_proc_count_changed)
+        section.add_widget(make_row("Processes to show", self._proc_count_spin))
 
         return section
 
@@ -533,6 +657,16 @@ class SettingsView(QWidget):
         temp = dict(self.settings.temperature)
         temp["critical"] = value
         self.settings.temperature = temp
+
+    def _on_proc_count_changed(self, value: int):
+        procs = dict(self.settings._data.get("processes", {"count": 5}))
+        procs["count"] = value
+        self.settings._data["processes"] = procs
+        self.settings.save()
+
+    def _on_traffic_count_changed(self, value: int):
+        self.settings._data["network"]["traffic_count"] = value
+        self.settings.save()
 
     def _on_ping_host_changed(self):
         host = self._ping_host_input.text().strip()
