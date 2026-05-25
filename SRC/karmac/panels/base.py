@@ -20,11 +20,11 @@ class BasePanel(QWidget):
         self._title = title
         self.setObjectName("panel")
         self.setMinimumWidth(200)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self._build_base_layout()
         self._setup_timer()
-        self.refresh()
+        self._safe_refresh()
 
     def _build_base_layout(self):
         """Build panel with accent bar on top and content below."""
@@ -74,10 +74,18 @@ class BasePanel(QWidget):
     def refresh(self):
         pass
 
+    def _safe_refresh(self):
+        """Wrap refresh in try/except to prevent panel crashes from killing the app."""
+        try:
+            self.refresh()
+        except Exception as e:
+            import logging
+            logging.error(f"Panel {self.__class__.__name__} refresh error: {e}", exc_info=True)
+
     def _setup_timer(self):
         if self.REFRESH_INTERVAL > 0:
             self._timer = QTimer(self)
-            self._timer.timeout.connect(self.refresh)
+            self._timer.timeout.connect(self._safe_refresh)
             self._timer.start(self.REFRESH_INTERVAL)
 
     def make_value_label(self, text: str = "") -> QLabel:
