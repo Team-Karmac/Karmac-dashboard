@@ -64,15 +64,18 @@ def read_latest_frame(log_path: Path) -> dict | None:
         return None
 
 
-def fps_color(fps: float) -> str:
-    if fps >= 120:
-        return "#06d6a0"
-    elif fps >= 60:
-        return "#b5e800"
-    elif fps >= 30:
-        return "#ffd000"
+GREEN  = "#06d6a0"
+YELLOW = "#ffd000"
+RED    = "#ff4d6d"
+
+def fps_color(fps: float, warning: float = 60, critical: float = 30) -> str:
+    """FPS is inverse — lower is worse."""
+    if fps >= warning:
+        return GREEN
+    elif fps >= critical:
+        return YELLOW
     else:
-        return "#ff4d6d"
+        return RED
 
 
 class FpsPanel(BasePanel):
@@ -203,7 +206,10 @@ class FpsPanel(BasePanel):
             gpu_temp  = frame.get("gpu_temp", "--")
 
             self._fps_label.setText(f"{fps:.0f}")
-            self._fps_label.setStyleSheet(f"color: {fps_color(fps)}; font-size: 40px; font-weight: 300;")
+            fps_cfg = self.settings._data.get("fps", {})
+            fps_warn = fps_cfg.get("warning", 60)
+            fps_crit = fps_cfg.get("critical", 30)
+            self._fps_label.setStyleSheet(f"color: {fps_color(fps, fps_warn, fps_crit)}; font-size: 40px; font-weight: 300;")
             self._frametime_label.setText(f"{frametime:.1f} ms frametime")
             self._cpu_load_label.setText(f"{cpu_load} %")
             self._gpu_load_label.setText(f"{gpu_load} %")
