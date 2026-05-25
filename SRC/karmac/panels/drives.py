@@ -111,12 +111,15 @@ class DrivesPanel(BasePanel):
         layout.setSpacing(5)
 
         pct = drive["percent"]
-        if pct >= 90:
+        drives_cfg = self.settings._data.get("drives_thresholds", {})
+        warn = drives_cfg.get("warning", 75)
+        crit = drives_cfg.get("critical", 90)
+        if pct >= crit:
             color = "#ff4d6d"
-        elif pct >= 75:
+        elif pct >= warn:
             color = "#ffd000"
         else:
-            color = "#b5e800"
+            color = "#06d6a0"
 
         # Top row: drive name + percentage
         top = QWidget()
