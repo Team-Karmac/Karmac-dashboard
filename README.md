@@ -12,30 +12,31 @@ Karmac is a free and open source desktop dashboard for Linux. It gives everyday 
 
 ## Features
 
-**Row 1 — Personal**
-- 🕐 **Clock & Date** — Configurable time format, date format, and timezone
-- 🌤 **Weather** — Current conditions + 3-day forecast powered by Open-Meteo (no API key required)
-- ⏱ **System Uptime** — Time since last boot
+**Row 1 — Personal & Connectivity**
+- 🕐 **Clock, Date & Calendar** — Time, date, and mini calendar with today highlighted
+- 🌤 **Weather** — Current conditions, high/low, 3-day forecast (Open-Meteo, no API key required)
+- 🌐 **Network** — Live speeds, ping/latency, and internet speed test
 
-**Row 2 — Connectivity & Memory**
-- 🌐 **Network** — Live upload/download speeds, ping/latency, and internet speed test
+**Row 2 — Thermal & Processing**
+- 🌡 **Temperature** — CPU and GPU temps in Celsius, Fahrenheit, or both
+- 💨 **Fan Speeds** — RPM readings grouped by chip with Zero RPM detection
+- ⚡ **CPU Cores** — Overall usage, per-core activity, and per-core frequency
+
+**Row 3 — Memory & Storage**
+- ⏱ **System Uptime** — Time since last boot
 - 💾 **RAM Usage** — Used/available memory in real time
 - 💿 **Hard Drives** — Space used/free for all detected drives
 
-**Row 3 — Thermal & Processing**
-- 🌡 **Temperature** — CPU and GPU temperatures in Celsius and Fahrenheit
-- 💨 **Fan Speeds** — RPM readings grouped by hardware chip with Zero RPM detection
-- ⚡ **CPU Cores** — Overall usage, per-core activity, and per-core frequency
-
 **Row 4 — Power & Graphics**
-- 🎮 **GPU Usage** — AMD GPU load percentage, VRAM usage, and power draw
-- ⚡ **Power Usage** — CPU package and GPU power consumption in watts
+- 🎮 **GPU Usage** — AMD GPU load, VRAM usage, and power draw
+- ⚡ **Power Usage** — CPU and GPU power consumption in watts
+- 🎯 **FPS** — Live FPS and gaming stats via MangoHud
 
 **Sidebar**
-- Full hardware information including CPU, GPU, RAM, storage, OS, kernel, desktop environment, and display details
+- Full hardware info: CPU, GPU, RAM, storage, OS, kernel, desktop environment, and display details
 
 **Full Settings System**
-- Dark/light theme, font size, panel enable/disable, timezone, custom fan labels, RPM thresholds, temperature thresholds, drive visibility, ping host, and more
+- Theme, font size, panel toggles, timezone, fan labels, RPM thresholds, temperature format, drive visibility, ping host, and more
 
 ---
 
@@ -72,13 +73,13 @@ source ~/karmac-env/bin/activate
 ### Step 4 — Install Python dependencies
 
 ```
-pip install PySide6 requests psutil speedtest-cli
+pip install -r SRC/requirements.txt
 ```
 
 ### Step 5 — Run Karmac
 
 ```
-cd src
+cd SRC
 python3 main.py
 ```
 
@@ -88,13 +89,13 @@ python3 main.py
 
 ### RAM Details (manufacturer, speed, type)
 
-Karmac reads RAM details using `dmidecode`. To allow this without a password prompt:
+Karmac reads RAM details using `dmidecode`. To allow this without a password prompt, run:
 
 ```
 sudo visudo
 ```
 
-Add this line at the bottom:
+Add this line at the bottom (replace `YOUR_USERNAME`):
 
 ```
 YOUR_USERNAME ALL=(ALL) NOPASSWD: /usr/sbin/dmidecode
@@ -122,6 +123,29 @@ sudo chmod a+r /sys/class/powercap/intel-rapl:0/energy_uj
 sudo chmod a+r /sys/class/powercap/intel-rapl:0:0/energy_uj
 ```
 
+### FPS Monitoring (MangoHud)
+
+Karmac reads live FPS data from MangoHud log files. First create a MangoHud config:
+
+```
+mkdir -p ~/.config/MangoHud
+nano ~/.config/MangoHud/MangoHud.conf
+```
+
+Add:
+
+```
+output_folder=/home/YOUR_USERNAME/.local/share/MangoHud
+log_interval=100
+fps
+gpu_stats
+cpu_stats
+ram
+autostart_log=1
+```
+
+**For Steam games**, add `mangohud %command%` to each game's launch options in Steam. Karmac will automatically detect when a game is running and display live FPS data.
+
 ---
 
 ## Desktop Launcher
@@ -138,14 +162,14 @@ rsvg-convert -w 128 -h 128 ~/Karmac-dashboard/Assets/Karmac_Logo.svg -o ~/.local
 nano ~/.local/share/applications/karmac.desktop
 ```
 
-Paste the following, replacing `YOUR_USERNAME` with your username:
+Paste the following, replacing `YOUR_USERNAME`:
 
 ```
 [Desktop Entry]
 Type=Application
 Name=Karmac Dashboard
 Comment=Everything you need. Nothing you don't.
-Exec=bash -c 'source /home/YOUR_USERNAME/karmac-env/bin/activate && python3 /home/YOUR_USERNAME/Karmac-dashboard/src/main.py'
+Exec=bash -c 'source /home/YOUR_USERNAME/karmac-env/bin/activate && python3 /home/YOUR_USERNAME/Karmac-dashboard/SRC/main.py'
 Icon=/home/YOUR_USERNAME/.local/share/icons/Karmac_Logo.png
 Categories=Utility;System;
 Terminal=false
@@ -158,6 +182,16 @@ StartupNotify=true
 cp ~/.local/share/applications/karmac.desktop ~/Desktop/
 chmod +x ~/Desktop/karmac.desktop
 gio set ~/Desktop/karmac.desktop metadata::trusted true
+```
+
+---
+
+## Troubleshooting
+
+If Karmac crashes, check the log file:
+
+```
+cat ~/.config/karmac/karmac.log
 ```
 
 ---
