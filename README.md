@@ -186,6 +186,27 @@ gio set ~/Desktop/karmac.desktop metadata::trusted true
 
 ---
 
+## Privacy
+
+Karmac is designed to be as privacy-focused as possible. Here is a complete list of every outbound connection Karmac makes:
+
+| Service | What is sent | When | Who receives it |
+|---------|-------------|------|-----------------|
+| Open-Meteo | Your latitude/longitude | Every 10 minutes when weather is configured | Open-Meteo (FOSS, EU-based, no tracking, no account required) |
+| Quad9 DNS (9.9.9.9) | A tiny ping packet | Every 5 seconds | Quad9 (non-profit, privacy-focused DNS) — configurable in Settings |
+| Ookla (speedtest.net) | Your IP address and connection speed | Only when you click "Run Test" | Ookla/Ziff Davis — see their privacy policy |
+
+**Everything else is 100% local:**
+- All hardware monitoring reads from `/proc`, `/sys`, and local system tools
+- FPS data comes from local MangoHud log files
+- Network traffic monitoring is done locally via nethogs
+- Settings are stored locally in `~/.config/karmac/`
+- No telemetry, no analytics, no crash reporting to external servers
+
+You can change the ping host to any server you prefer in Settings. You can also disable the speed test entirely by disabling the Network panel.
+
+---
+
 ## Troubleshooting
 
 If Karmac crashes, check the log file:
