@@ -16,7 +16,15 @@ DEFAULT_SETTINGS = {
         "weather":    {"enabled": True,  "position": 1},
         "fan_speeds": {"enabled": True,  "position": 2},
         "network":    {"enabled": True,  "position": 3},
-        "uptime":     {"enabled": True,  "position": 4},
+        "ram":         {"enabled": True,  "position": 4},
+        "drives":      {"enabled": True,  "position": 7},
+        "cpu_cores":   {"enabled": True,  "position": 8},
+        "hardware":    {"enabled": False, "position": 9},
+        "gpu_usage":   {"enabled": True,  "position": 10},
+        "power":       {"enabled": True,  "position": 11},
+        "fps":         {"enabled": True,  "position": 12},
+        "temperature": {"enabled": True,  "position": 5},
+        "uptime":      {"enabled": True,  "position": 6},
     },
     "weather": {
         "latitude":      None,
@@ -36,9 +44,19 @@ DEFAULT_SETTINGS = {
         "rpm_warning":       2000,
         "rpm_critical":      3000,
     },
+    "temperature": {
+        "units":    "celsius",
+        "show":     "celsius",
+        "warning":  70,
+        "critical": 90,
+    },
     "network": {
-        "interface": "auto",
+        "interface":  "auto",
         "speed_unit": "auto",
+        "ping_host":  "8.8.8.8",
+    },
+    "drives": {
+        "hidden": [],
     },
     "window": {
         "width":  1100,
@@ -137,6 +155,15 @@ class Settings:
     @fans.setter
     def fans(self, value):
         self._data["fans"] = value
+        self.save()
+
+    @property
+    def temperature(self):
+        return self._data.get("temperature", DEFAULT_SETTINGS["temperature"])
+
+    @temperature.setter
+    def temperature(self, value):
+        self._data["temperature"] = value
         self.save()
 
     @property
