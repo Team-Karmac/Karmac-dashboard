@@ -74,9 +74,10 @@ def make_row(label_text: str, widget: QWidget) -> QWidget:
 
 class SettingsView(QWidget):
 
-    def __init__(self, settings: Settings, parent=None):
+    def __init__(self, settings: Settings, main_window=None, parent=None):
         super().__init__(parent)
         self.settings = settings
+        self._main_window = main_window
         self._search_thread = None
         self._search_results_data = []
         self._fan_label_inputs = {}
@@ -106,7 +107,10 @@ class SettingsView(QWidget):
         layout.addWidget(self._build_panels_section())
         layout.addWidget(self._build_clock_section())
         layout.addWidget(self._build_weather_section())
+        layout.addWidget(self._build_network_section())
         layout.addWidget(self._build_fans_section())
+        layout.addWidget(self._build_temperature_section())
+        layout.addWidget(self._build_drives_section())
         layout.addWidget(self._build_startup_section())
         layout.addStretch()
 
@@ -143,6 +147,13 @@ class SettingsView(QWidget):
             "fan_speeds": "Fan Speeds",
             "network":    "Network Status",
             "uptime":     "System Uptime",
+            "temperature": "CPU & GPU Temperature",
+            "ram":         "RAM Usage",
+            "drives":      "Hard Drives",
+            "cpu_cores":   "CPU Core Activity",
+            "gpu_usage":   "GPU Usage",
+            "power":       "Power Usage",
+            "fps":         "FPS",
         }
 
         self._panel_checks = {}
@@ -229,8 +240,30 @@ class SettingsView(QWidget):
 
         return section
 
+    def _build_network_section(self) -> QWidget:
+        section = SettingSection("Network", "#9b5de5")
+
+        self._ping_host_input = QLineEdit()
+        self._ping_host_input.setPlaceholderText("e.g. 8.8.8.8 or 1.1.1.1")
+        self._ping_host_input.setText(self.settings._data.get("network", {}).get("ping_host", "8.8.8.8"))
+
+        save_btn = QPushButton("Save")
+        save_btn.setFixedWidth(80)
+        save_btn.clicked.connect(self._on_ping_host_changed)
+
+        row = QWidget()
+        layout = QHBoxLayout(row)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(8)
+        layout.addWidget(self._ping_host_input)
+        layout.addWidget(save_btn)
+
+        section.add_widget(make_row("Ping Host", QLabel("")))
+        section.add_widget(row)
+        return section
+
     def _build_fans_section(self) -> QWidget:
-        section = SettingSection("Fan Speeds", "#ffbe0b")
+        section = SettingSection("Fan Speeds", "#ffd000")
 
         # RPM warning threshold
         self._rpm_warning_spin = QSpinBox()
@@ -270,6 +303,79 @@ class SettingsView(QWidget):
         fan_labels_widget.setLayout(self._fan_labels_container)
         section.add_widget(fan_labels_widget)
         self._populate_fan_labels()
+
+        return section
+
+    def _build_temperature_section(self) -> QWidget:
+        section = SettingSection("Temperature", "#ff6d00")
+
+        # Display format
+        self._temp_show_combo = QComboBox()
+        self._temp_show_combo.addItems(["Celsius only", "Fahrenheit only", "Both"])
+        current_show = self.settings.temperature.get("show", "celsius")
+        show_map = {"celsius": "Celsius only", "fahrenheit": "Fahrenheit only", "both": "Both"}
+        self._temp_show_combo.setCurrentText(show_map.get(current_show, "Celsius only"))
+        self._temp_show_combo.currentTextChanged.connect(self._on_temp_show_changed)
+        section.add_widget(make_row("Display Format", self._temp_show_combo))
+
+        # Warning threshold
+        self._temp_warning_spin = QSpinBox()
+        self._temp_warning_spin.setRange(30, 100)
+        self._temp_warning_spin.setSingleStep(5)
+        self._temp_warning_spin.setValue(self.settings.temperature.get("warning", 70))
+        self._temp_warning_spin.setSuffix("°C")
+        self._temp_warning_spin.setMinimumWidth(100)
+        self._temp_warning_spin.valueChanged.connect(self._on_temp_warning_changed)
+        section.add_widget(make_row("Warning Threshold", self._temp_warning_spin))
+
+        # Critical threshold
+        self._temp_critical_spin = QSpinBox()
+        self._temp_critical_spin.setRange(30, 110)
+        self._temp_critical_spin.setSingleStep(5)
+        self._temp_critical_spin.setValue(self.settings.temperature.get("critical", 90))
+        self._temp_critical_spin.setSuffix("°C")
+        self._temp_critical_spin.setMinimumWidth(100)
+        self._temp_critical_spin.valueChanged.connect(self._on_temp_critical_changed)
+        section.add_widget(make_row("Critical Threshold", self._temp_critical_spin))
+
+        return section
+
+    def _build_drives_section(self) -> QWidget:
+        section = SettingSection("Hard Drives", "#b5e800")
+
+        hint = QLabel("Toggle which drives appear on the dashboard.")
+        hint.setObjectName("panel-unit")
+        hint.setStyleSheet("color: rgba(240,240,255,0.3); font-style: italic;")
+        hint.setWordWrap(True)
+        section.add_widget(hint)
+
+        # Populate drive toggles dynamically
+        try:
+            import psutil, os
+            hidden = self.settings._data.get("drives", {}).get("hidden", [])
+            partitions = psutil.disk_partitions()
+            for p in partitions:
+                if any(skip in p.fstype for skip in ('squash', 'tmpfs', 'devtmpfs')):
+                    continue
+                if any(skip in p.mountpoint for skip in ('/snap/',)):
+                    continue
+                # Use friendly name
+                if p.mountpoint == "/":
+                    friendly = "System Drive (/)"
+                elif p.mountpoint == "/home":
+                    friendly = "Home (/home)"
+                elif p.mountpoint == "/boot/efi":
+                    friendly = "EFI Boot Partition"
+                elif p.mountpoint.startswith("/media") or p.mountpoint.startswith("/mnt"):
+                    friendly = f"{os.path.basename(p.mountpoint) or 'External Drive'} ({p.mountpoint})"
+                else:
+                    friendly = f"{p.mountpoint}"
+                cb = QCheckBox(friendly)
+                cb.setChecked(p.mountpoint not in hidden)
+                cb.toggled.connect(lambda checked, mp=p.mountpoint: self._on_drive_toggled(mp, checked))
+                section.add_widget(cb)
+        except Exception:
+            section.add_widget(QLabel("No drives detected"))
 
         return section
 
@@ -357,7 +463,7 @@ class SettingsView(QWidget):
             self._fan_labels_container.addWidget(no_fans)
 
     def _refresh_weather_panel(self):
-        main_window = self.parent()
+        main_window = self._main_window or self.parent()
         if main_window and hasattr(main_window, '_panels'):
             panel = main_window._panels.get('weather')
             if panel:
@@ -373,13 +479,15 @@ class SettingsView(QWidget):
 
     def _on_theme_changed(self, value: str):
         self.settings.theme = value.lower()
-        if self.parent():
-            self.parent().apply_theme(value.lower())
+        mw = self._main_window or self.parent()
+        if mw:
+            mw.apply_theme(value.lower())
 
     def _on_font_size_changed(self, value: str):
         self.settings.font_size = value.lower()
-        if self.parent():
-            self.parent().apply_theme(self.settings.theme)
+        mw = self._main_window or self.parent()
+        if mw:
+            mw.apply_theme(self.settings.theme)
 
     def _on_panel_toggled(self, panel_name: str, enabled: bool):
         self.settings.set_panel_enabled(panel_name, enabled)
@@ -405,6 +513,33 @@ class SettingsView(QWidget):
         self.settings.weather = weather
         self._refresh_weather_panel()
 
+    def _on_temp_show_changed(self, value: str):
+        temp = dict(self.settings.temperature)
+        show_map = {"Celsius only": "celsius", "Fahrenheit only": "fahrenheit", "Both": "both"}
+        temp["show"] = show_map.get(value, "celsius")
+        self.settings.temperature = temp
+
+    def _on_temp_units_changed(self, value: str):
+        temp = dict(self.settings.temperature)
+        temp["units"] = value.lower()
+        self.settings.temperature = temp
+
+    def _on_temp_warning_changed(self, value: int):
+        temp = dict(self.settings.temperature)
+        temp["warning"] = value
+        self.settings.temperature = temp
+
+    def _on_temp_critical_changed(self, value: int):
+        temp = dict(self.settings.temperature)
+        temp["critical"] = value
+        self.settings.temperature = temp
+
+    def _on_ping_host_changed(self):
+        host = self._ping_host_input.text().strip()
+        if host:
+            self.settings._data["network"]["ping_host"] = host
+            self.settings.save()
+
     def _on_rpm_warning_changed(self, value: int):
         fans = dict(self.settings.fans)
         fans["rpm_warning"] = value
@@ -417,6 +552,17 @@ class SettingsView(QWidget):
 
     def _save_fan_label(self, raw: str, custom: str):
         self.settings.set_fan_label(raw, custom.strip())
+
+    def _on_drive_toggled(self, mountpoint: str, visible: bool):
+        drives = dict(self.settings._data.get("drives", {"hidden": []}))
+        hidden = list(drives.get("hidden", []))
+        if not visible and mountpoint not in hidden:
+            hidden.append(mountpoint)
+        elif visible and mountpoint in hidden:
+            hidden.remove(mountpoint)
+        drives["hidden"] = hidden
+        self.settings._data["drives"] = drives
+        self.settings.save()
 
     def _on_startup_changed(self, checked: bool):
         self.settings.launch_on_startup = checked
