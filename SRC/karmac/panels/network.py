@@ -230,7 +230,7 @@ class NetworkPanel(BasePanel):
         self._speed_time = self.make_unit_label("")
         self._speed_btn  = QPushButton("Run Test")
         self._speed_btn.setFixedHeight(28)
-        self._speed_btn.setFixedWidth(90)
+        self._speed_btn.setMinimumWidth(100)
         self._speed_btn.clicked.connect(self._run_speed_test)
 
         layout.addWidget(speed_header)
