@@ -4,13 +4,23 @@ Karmac Dashboard — Setup Script
 Installs Karmac and its dependencies.
 """
 
+import os
 from setuptools import setup, find_packages
+
+# Handle README being in parent directory or same directory
+readme_paths = ["README.md", "../README.md"]
+long_description = ""
+for path in readme_paths:
+    if os.path.exists(path):
+        with open(path) as f:
+            long_description = f.read()
+        break
 
 setup(
     name="karmac",
     version="3.0.0",
     description="A free and open source desktop dashboard for Linux",
-    long_description=open("README.md").read(),
+    long_description=long_description,
     long_description_content_type="text/markdown",
     author="Team Karmac",
     license="GPL-3.0-or-later",
