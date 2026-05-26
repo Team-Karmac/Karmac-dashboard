@@ -12,41 +12,62 @@ from karmac.settings import Settings
 
 
 def get_drive_info() -> list:
-    """Read disk usage for all mounted drives."""
-    drives = []
+    """Read disk usage for all mounted drives, deduplicating by physical device."""
+    seen_devices = {}
     try:
         partitions = psutil.disk_partitions()
         for p in partitions:
-            if any(skip in p.fstype for skip in ('squash', 'tmpfs', 'devtmpfs', 'proc', 'sysfs')):
+            # Skip virtual filesystems
+            if any(skip in p.fstype for skip in (
+                'squash', 'tmpfs', 'devtmpfs', 'proc', 'sysfs', 'overlay',
+                'fuse', 'fusectl', 'cgroup', 'pstore', 'bpf', 'tracefs',
+                'debugfs', 'configfs', 'hugetlbfs', 'mqueue', 'ramfs'
+            )):
                 continue
-            if any(skip in p.mountpoint for skip in ('/snap/', '/boot/efi')):
+            # Only show real physical drives
+            if not p.device.startswith('/dev/'):
+                continue
+            # Skip system/boot/Flatpak paths
+            skip_paths = (
+                '/snap/', '/boot', '/run/', '/etc/', '/usr/',
+                '/var/', '/lib', '/bin', '/sbin', '/opt', '/srv',
+                '/tmp', '/lost+found', '/cdrom', '/swapfile', '/timeshift'
+            )
+            if any(skip in p.mountpoint for skip in skip_paths):
                 continue
             try:
                 usage = psutil.disk_usage(p.mountpoint)
-                # Give friendly names to common mount points
+
                 if p.mountpoint == "/":
                     name = "System Drive"
+                    priority = 0
                 elif p.mountpoint == "/home":
                     name = "Home"
+                    priority = 1
                 elif p.mountpoint.startswith("/media") or p.mountpoint.startswith("/mnt"):
                     name = os.path.basename(p.mountpoint) or "External Drive"
+                    priority = 2
                 else:
                     name = p.mountpoint
+                    priority = 3
 
-                drives.append({
-                    "name":       name,
-                    "mountpoint": p.mountpoint,
-                    "device":     p.device.split("/")[-1],
-                    "total":      usage.total,
-                    "used":       usage.used,
-                    "free":       usage.free,
-                    "percent":    usage.percent,
-                })
+                # Keep only the best mount point per physical device
+                if p.device not in seen_devices or priority < seen_devices[p.device]['priority']:
+                    seen_devices[p.device] = {
+                        "name":       name,
+                        "mountpoint": p.mountpoint,
+                        "device":     p.device.split("/")[-1],
+                        "total":      usage.total,
+                        "used":       usage.used,
+                        "free":       usage.free,
+                        "percent":    usage.percent,
+                        "priority":   priority,
+                    }
             except (PermissionError, OSError):
                 continue
     except Exception:
         pass
-    return drives
+    return list(seen_devices.values())
 
 
 def format_bytes(b: int) -> str:
@@ -99,21 +120,22 @@ class DrivesPanel(BasePanel):
 
         self._no_drives_label.hide()
 
-        for drive in drives:
-            row = self._make_drive_row(drive)
-            self._drive_container.addWidget(row)
-            self._drive_widgets.append(row)
-
-    def _make_drive_row(self, drive: dict) -> QWidget:
-        row = QWidget()
-        layout = QVBoxLayout(row)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(5)
-
-        pct = drive["percent"]
         drives_cfg = self.settings._data.get("drives_thresholds", {})
         warn = drives_cfg.get("warning", 75)
         crit = drives_cfg.get("critical", 90)
+
+        for drive in drives:
+            row = self._make_drive_row(drive, warn, crit)
+            self._drive_container.addWidget(row)
+            self._drive_widgets.append(row)
+
+    def _make_drive_row(self, drive: dict, warn: float, crit: float) -> QWidget:
+        row = QWidget()
+        layout = QVBoxLayout(row)
+        layout.setContentsMargins(0, 2, 0, 2)
+        layout.setSpacing(5)
+
+        pct = drive["percent"]
         if pct >= crit:
             color = "#ff4d6d"
         elif pct >= warn:
@@ -121,7 +143,6 @@ class DrivesPanel(BasePanel):
         else:
             color = "#06d6a0"
 
-        # Top row: drive name + percentage
         top = QWidget()
         top_layout = QHBoxLayout(top)
         top_layout.setContentsMargins(0, 0, 0, 0)
@@ -140,7 +161,6 @@ class DrivesPanel(BasePanel):
         top_layout.addStretch()
         top_layout.addWidget(pct_label)
 
-        # Bottom row: used / total — free
         bottom = QWidget()
         bottom_layout = QHBoxLayout(bottom)
         bottom_layout.setContentsMargins(0, 0, 0, 0)
