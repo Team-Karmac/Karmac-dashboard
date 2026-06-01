@@ -141,13 +141,16 @@ def get_motherboard() -> str:
 
 
 def get_os_info() -> str:
-    try:
-        with open("/etc/os-release") as f:
-            for line in f:
-                if line.startswith("PRETTY_NAME="):
-                    return line.split("=")[1].strip().strip('"')
-    except Exception:
-        pass
+    for path in ["/run/host/os-release", "/var/run/host/os-release", "/etc/os-release"]:
+        try:
+            with open(path) as f:
+                for line in f:
+                    if line.startswith("PRETTY_NAME="):
+                        name = line.split("=")[1].strip().strip('"')
+                        if "flatpak" not in name.lower() and "kde" not in name.lower():
+                            return name
+        except Exception:
+            continue
     return "Linux"
 
 
