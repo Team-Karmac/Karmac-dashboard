@@ -10,6 +10,27 @@ Karmac is a free and open source desktop dashboard for Linux. It gives everyday 
 
 ---
 
+## Why Karmac?
+
+| | Karmac | Conky | Grafana | Homepage/Homarr |
+|---|---|---|---|---|
+| **Native desktop app** | ✅ | ✅ | ❌ Web app | ❌ Web app |
+| **Local-first** | ✅ | ✅ | ⚠️ Optional | ⚠️ Optional |
+| **No telemetry** | ✅ | ✅ | ❌ | ❌ |
+| **No configuration files** | ✅ | ❌ | ❌ | ❌ |
+| **Gaming metrics (FPS)** | ✅ | ⚠️ Limited | ❌ | ❌ |
+| **Linux-focused** | ✅ | ✅ | ❌ | ❌ |
+| **Modern UI** | ✅ | ⚠️ Dated | ✅ | ✅ |
+| **Privacy documentation** | ✅ | ✅ | ❌ | ❌ |
+| **One-command install** | ✅ | ❌ | ❌ | ❌ |
+| **No web server required** | ✅ | ✅ | ❌ | ❌ |
+| **Weather + personal info** | ✅ | ⚠️ Limited | ❌ | ⚠️ Limited |
+| **Power consumption** | ✅ | ⚠️ Limited | ⚠️ Limited | ❌ |
+
+Karmac sits in a unique space — a **native, privacy-focused, modern desktop dashboard** designed specifically for everyday Linux users and gamers. No web server, no cloud, no configuration files. Just install and go.
+
+---
+
 ## Features
 
 **Row 1 — Personal & Connectivity**
