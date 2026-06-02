@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Karmac Dashboard
+GenericName=System Dashboard
+Comment=Everything you need. Nothing you don't.
+Exec=karmac
+Icon=io.gitlab.team_karmac1.KarmacDashboard
+Categories=System;Monitor;Utility;
+Keywords=dashboard;system;monitor;hardware;performance;
+Terminal=false
+StartupNotify=true
+StartupWMClass=karmac
