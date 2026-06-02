@@ -176,7 +176,7 @@ class ProcessesPanel(BasePanel):
         if self._cpu_btn is None:
             return
         active   = "background-color: #e040fb; color: #ffffff; border: none; border-radius: 6px; font-size: 11px; font-weight: 600;"
-        inactive = "background-color: rgba(224,64,251,0.12); color: rgba(240,240,255,0.5); border: 1px solid rgba(224,64,251,0.3); border-radius: 6px; font-size: 11px;"
+        inactive = "background-color: rgba(224,64,251,0.12); color: rgba(100,0,120,0.7); border: 1px solid rgba(224,64,251,0.4); border-radius: 6px; font-size: 11px;"
         if self._sort_by == "cpu":
             self._cpu_btn.setStyleSheet(active)
             self._ram_btn.setStyleSheet(inactive)
