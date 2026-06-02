@@ -2,6 +2,30 @@
 
 ---
 
+## v3.0.1 — June 2026
+
+### Light Theme Fixes
+- Calendar day numbers and headers now visible in light theme
+- Sidebar hardware labels readable in both dark and light themes
+- CPU core labels visible in light theme
+- Power Usage CPU/GPU values visible in light theme
+- FPS idle text visible in light theme
+- Process monitor RAM button visible in light theme
+
+### Flatpak Compatibility
+- Replaced ping command with TCP socket latency check — works inside Flatpak sandbox
+- Fixed OS detection to show host OS (e.g. Linux Mint) instead of KDE Flatpak runtime
+- Fixed hard drives panel to deduplicate by physical device — prevents dozens of duplicate entries in Flatpak
+- Flatpak manifest created and tested
+
+### Documentation
+- Added "Why Karmac?" comparison table to README
+- Added Roadmap section to README
+- Added v4 architecture considerations to spec
+- Privacy section improved
+
+---
+
 ## v3.0.0 — May 2026
 
 ### New Panels
