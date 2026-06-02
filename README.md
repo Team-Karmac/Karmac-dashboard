@@ -217,6 +217,21 @@ cat ~/.config/karmac/karmac.log
 
 ---
 
+## Roadmap
+
+### v4 Considerations
+- **Shared metrics service** — centralized data collection with panels subscribing to a shared cache rather than polling independently. Improves efficiency on lower-powered hardware as the panel count grows
+- **Plugin/widget framework** — allow community contributors to create custom panels without modifying core code
+- **Theme marketplace** — share and download community-created themes
+- **Additional screenshots** — light theme, gaming mode, settings page
+- **"Why Karmac?" comparison** — help visitors understand the value proposition immediately
+- **AppImage packaging** — alternative to Flatpak for broader distro support
+- **AUR package** — for Arch/Manjaro users
+- **Battery status** — for laptop users
+- **Multi-monitor support** — different dashboards on different screens
+
+---
+
 ## Contributing
 
 Karmac is built in the open and contributions are very welcome! Whether you're a developer, designer, translator, or tester — there's a place for you.
