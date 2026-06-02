@@ -97,7 +97,8 @@ class FpsPanel(BasePanel):
     def build_content(self, layout: QVBoxLayout):
         # Game name
         self._game_label = self.make_unit_label("No active game")
-        self._game_label.setStyleSheet("color: rgba(240,240,255,0.4); font-style: italic;")
+        self._game_label.setObjectName("panel-unit")
+        self._game_label.setStyleSheet("font-style: italic;")
         layout.addWidget(self._game_label)
 
         # Main FPS display
