@@ -78,10 +78,8 @@ class ClockPanel(BasePanel):
             lbl = QLabel(day)
             lbl.setAlignment(Qt.AlignCenter)
             lbl.setFixedWidth(26)
-            if day in ("Sa", "Su"):
-                lbl.setStyleSheet("color: rgba(240,240,255,0.3); font-size: 10px; font-weight: 600;")
-            else:
-                lbl.setStyleSheet("color: rgba(240,240,255,0.35); font-size: 10px; font-weight: 600;")
+            lbl.setObjectName("panel-unit")
+            lbl.setStyleSheet("font-size: 10px; font-weight: 600;")
             self._cal_grid.addWidget(lbl, 0, col)
 
         layout.addWidget(self._cal_widget)
@@ -133,13 +131,15 @@ class ClockPanel(BasePanel):
 
     def _build_calendar(self, today: datetime):
         """Build the calendar grid for the current month."""
-        # Clear existing day cells (keep header row)
+        # Clear existing day cells
         for key, lbl in self._day_labels.items():
             lbl.setParent(None)
         self._day_labels.clear()
 
         # Month title
         self._cal_title.setText(today.strftime("%B %Y"))
+        self._cal_title.setObjectName("panel-subtitle")
+        self._cal_title.setStyleSheet("font-size: 11px; font-weight: 600; letter-spacing: 0.05em;")
 
         # Get calendar data
         cal = calendar.monthcalendar(today.year, today.month)
@@ -156,7 +156,6 @@ class ClockPanel(BasePanel):
                 lbl.setFixedHeight(20)
 
                 if day == today.day:
-                    # Today — highlighted
                     lbl.setStyleSheet("""
                         background-color: #4361ee;
                         color: #ffffff;
@@ -165,10 +164,11 @@ class ClockPanel(BasePanel):
                         font-weight: 700;
                     """)
                 elif col_idx >= 5:
-                    # Weekend
-                    lbl.setStyleSheet("color: rgba(240,240,255,0.4); font-size: 10px;")
+                    lbl.setObjectName("panel-unit")
+                    lbl.setStyleSheet("font-size: 10px;")
                 else:
-                    lbl.setStyleSheet("color: rgba(240,240,255,0.65); font-size: 10px;")
+                    lbl.setObjectName("panel-subtitle")
+                    lbl.setStyleSheet("font-size: 10px;")
 
                 self._cal_grid.addWidget(lbl, row_idx + 1, col_idx)
                 if day != 0:
