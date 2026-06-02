@@ -156,7 +156,7 @@ class CpuCoresPanel(BasePanel):
                 core_name = QLabel(f"C{i}")
                 core_name.setObjectName("panel-unit")
                 core_name.setFixedWidth(22)
-                core_name.setStyleSheet("color: rgba(240,240,255,0.4);")
+                core_name.setObjectName("panel-unit")
 
                 # Core percentage
                 core_pct = QLabel(f"{pct:.0f}%")
