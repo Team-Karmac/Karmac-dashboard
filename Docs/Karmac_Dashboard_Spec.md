@@ -200,17 +200,23 @@ Karmac launches in English. Additional language translations are welcomed and en
 
 ## Future Considerations
 
-### Longer Term
-Additional features that may be considered based on community feedback:
+### v4 Architecture
+- **Shared metrics service** — centralized data collection with a shared cache that panels subscribe to, rather than each panel polling independently. Important for scalability and efficiency on lower-powered hardware
 
+### Community-Driven Features
+The following may be considered based on community feedback:
+- Plugin/widget framework for community-created panels
+- Theme marketplace
 - Currently playing music display
 - Calendar integration
 - System notifications center
 - Quick app launcher
-- Battery status (for laptop users)
+- Battery status for laptop users
 - Additional language packs
-- Community-contributed themes
 - NVIDIA GPU support improvements
+- AppImage packaging
+- AUR package for Arch/Manjaro users
+- Multi-monitor support
 
 ---
 
