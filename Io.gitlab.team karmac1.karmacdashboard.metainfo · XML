@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.gitlab.team_karmac1.KarmacDashboard</id>
+  <name>Karmac Dashboard</name>
+  <summary>Everything you need. Nothing you don't.</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      Karmac is a free and open source desktop dashboard for Linux. It gives everyday
+      users a beautiful, organized view of their system health and personal information
+      — without requiring any technical knowledge to set up or use.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Clock with mini calendar</li>
+      <li>Weather with 3-day forecast (no API key required)</li>
+      <li>Network speeds, ping/latency, and internet speed test</li>
+      <li>CPU and GPU temperatures with configurable thresholds</li>
+      <li>Fan speeds with Zero RPM detection</li>
+      <li>CPU core activity and per-core frequency</li>
+      <li>RAM and hard drive usage</li>
+      <li>GPU usage and VRAM monitoring</li>
+      <li>System power consumption</li>
+      <li>Live FPS via MangoHud integration</li>
+      <li>Network traffic by application</li>
+      <li>Process monitor</li>
+      <li>Disk I/O speeds</li>
+      <li>Full hardware info in the sidebar</li>
+    </ul>
+    <p>
+      Karmac is privacy-focused — no telemetry, no analytics, no accounts required.
+      All monitoring is done locally. Weather data uses Open-Meteo, a free and open
+      source weather API with no tracking.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.gitlab.team_karmac1.KarmacDashboard.desktop</launchable>
+
+  <url type="homepage">https://gitlab.com/team.karmac1/Karmac-dashboard</url>
+  <url type="bugtracker">https://gitlab.com/team.karmac1/Karmac-dashboard/-/issues</url>
+  <url type="vcs-browser">https://gitlab.com/team.karmac1/Karmac-dashboard</url>
+
+  <developer id="io.gitlab.team_karmac1">
+    <name>Team Karmac</name>
+  </developer>
+
+  <provides>
+    <binary>karmac</binary>
+  </provides>
+
+  <releases>
+    <release version="3.0.0" date="2026-05-26">
+      <description>
+        <p>Version 3.0.0 release featuring:</p>
+        <ul>
+          <li>Network traffic monitoring by application</li>
+          <li>Process monitor with CPU and RAM usage</li>
+          <li>Disk I/O speed monitoring</li>
+          <li>Universal green/yellow/red color system for all panels</li>
+          <li>Fully configurable warning and critical thresholds</li>
+          <li>Privacy-focused ping using Quad9 (9.9.9.9) by default</li>
+          <li>Karmac logo in taskbar</li>
+        </ul>
+      </description>
+    </release>
+    <release version="2.0.0" date="2026-05-25">
+      <description>
+        <p>Version 2.0.0 with 10 new panels and major improvements.</p>
+      </description>
+    </release>
+    <release version="1.0.0" date="2026-05-24">
+      <description>
+        <p>Initial release.</p>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1"/>
+
+  <categories>
+    <category>System</category>
+    <category>Monitor</category>
+    <category>Utility</category>
+  </categories>
+
+  <keywords>
+    <keyword>dashboard</keyword>
+    <keyword>system monitor</keyword>
+    <keyword>hardware</keyword>
+    <keyword>performance</keyword>
+    <keyword>linux</keyword>
+    <keyword>privacy</keyword>
+  </keywords>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Karmac Dashboard showing all 15 panels</caption>
+      <image>https://gitlab.com/team.karmac1/Karmac-dashboard/-/raw/main/Assets/Screenshot.png</image>
+    </screenshot>
+  </screenshots>
+</component>
