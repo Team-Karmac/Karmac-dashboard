@@ -117,7 +117,7 @@ class PowerPanel(BasePanel):
         self._cpu_label = QLabel("-- W")
         self._cpu_label.setObjectName("panel-subtitle")
         self._cpu_label.setAlignment(Qt.AlignRight)
-        self._cpu_label.setStyleSheet("color: rgba(240,240,255,0.75);")
+        self._cpu_label.setObjectName("panel-subtitle")
 
         cpu_layout.addWidget(cpu_name)
         cpu_layout.addStretch()
@@ -135,7 +135,7 @@ class PowerPanel(BasePanel):
         self._gpu_label = QLabel("-- W")
         self._gpu_label.setObjectName("panel-subtitle")
         self._gpu_label.setAlignment(Qt.AlignRight)
-        self._gpu_label.setStyleSheet("color: rgba(240,240,255,0.75);")
+        self._gpu_label.setObjectName("panel-subtitle")
 
         gpu_layout.addWidget(gpu_name)
         gpu_layout.addStretch()
