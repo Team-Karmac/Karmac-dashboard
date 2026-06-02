@@ -20,26 +20,35 @@ COLORS = {
         "accent_red":       "#ff4d6d",
         "scrollbar":        "rgba(255, 255, 255, 0.08)",
         "scrollbar_hover":  "rgba(255, 255, 255, 0.16)",
+        "sidebar_hw_label": "rgba(240, 240, 255, 0.35)",
+        "sidebar_hw_value": "rgba(240, 240, 255, 0.85)",
+        "cal_day":          "rgba(240, 240, 255, 0.65)",
+        "cal_weekend":      "rgba(240, 240, 255, 0.4)",
+        "cal_header":       "rgba(240, 240, 255, 0.35)",
     },
     "light": {
         "bg_primary":       "#eeeef8",
-        "bg_secondary":     "#e4e4f0",
+        "bg_secondary":     "#e0e0ee",
         "bg_panel":         "#ffffff",
         "bg_panel_hover":   "#f5f5ff",
-        "border":           "rgba(0, 0, 0, 0.07)",
-        "border_accent":    "rgba(0, 0, 0, 0.13)",
+        "border":           "rgba(0, 0, 0, 0.08)",
+        "border_accent":    "rgba(0, 0, 0, 0.15)",
         "text_primary":     "#0d0d1f",
-        "text_secondary":   "rgba(13, 13, 31, 0.55)",
-        "text_muted":       "rgba(13, 13, 31, 0.32)",
+        "text_secondary":   "rgba(13, 13, 31, 0.65)",
+        "text_muted":       "rgba(13, 13, 31, 0.45)",
         "accent_blue":      "#4361ee",
         "accent_green":     "#06b887",
         "accent_amber":     "#c8a800",
         "accent_red":       "#e8003d",
         "scrollbar":        "rgba(0, 0, 0, 0.08)",
         "scrollbar_hover":  "rgba(0, 0, 0, 0.16)",
+        "sidebar_hw_label": "rgba(13, 13, 31, 0.45)",
+        "sidebar_hw_value": "rgba(13, 13, 31, 0.85)",
+        "cal_day":          "rgba(13, 13, 31, 0.7)",
+        "cal_weekend":      "rgba(13, 13, 31, 0.4)",
+        "cal_header":       "rgba(13, 13, 31, 0.45)",
     }
 }
-
 
 
 FONT_SIZES = {
@@ -216,7 +225,7 @@ def get_stylesheet(theme: str, font_size: str = 'medium') -> str:
     QComboBox {{
         background-color: {c['bg_panel']};
         color: {c['text_primary']};
-        border: 1px solid {c['border_accent']};
+        border: 2px solid #4361ee;
         border-radius: 8px;
         padding: 6px 12px;
         font-size: 13px;
@@ -236,13 +245,31 @@ def get_stylesheet(theme: str, font_size: str = 'medium') -> str:
     QLineEdit {{
         background-color: {c['bg_panel']};
         color: {c['text_primary']};
-        border: 1px solid {c['border_accent']};
+        border: 2px solid #4361ee;
         border-radius: 8px;
         padding: 8px 12px;
         font-size: 13px;
     }}
 
     QLineEdit:focus {{ border-color: {c['accent_blue']}; }}
+
+    QSpinBox {{
+        background-color: {c['bg_panel']};
+        color: {c['text_primary']};
+        border: 2px solid #4361ee;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: 120px;
+    }}
+
+    QSpinBox:focus {{ border-color: {c['accent_blue']}; }}
+
+    QSpinBox::up-button, QSpinBox::down-button {{
+        width: 20px;
+        border: none;
+        background: transparent;
+    }}
 
     QPushButton {{
         background-color: {c['accent_blue']};
@@ -294,3 +321,8 @@ def apply_theme(app, theme: str, font_size: str = "medium"):
 
 def get_color(theme: str, key: str) -> str:
     return COLORS.get(theme, COLORS["dark"]).get(key, "#ffffff")
+
+
+def get_theme_colors(theme: str) -> dict:
+    """Return the full color dict for a theme — used by panels for dynamic styling."""
+    return COLORS.get(theme, COLORS["dark"])
