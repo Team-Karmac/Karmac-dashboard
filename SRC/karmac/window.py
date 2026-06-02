@@ -170,17 +170,15 @@ class KarmacWindow(QMainWindow):
             row_layout.setSpacing(1)
 
             lbl = QLabel(label.upper())
+            lbl.setObjectName("panel-unit")
             lbl.setStyleSheet(
-                "color: rgba(240,240,255,0.35);"
                 "font-size: 9px;"
                 "font-weight: 700;"
                 "letter-spacing: 0.1em;"
             )
             val = QLabel(value)
-            val.setStyleSheet(
-                "color: rgba(240,240,255,0.85);"
-                "font-size: 11px;"
-            )
+            val.setObjectName("panel-subtitle")
+            val.setStyleSheet("font-size: 11px;")
             val.setWordWrap(True)
 
             row_layout.addWidget(lbl)
