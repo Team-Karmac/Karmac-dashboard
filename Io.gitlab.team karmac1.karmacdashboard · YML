@@ -1,0 +1,120 @@
+app-id: io.gitlab.team_karmac1.KarmacDashboard
+runtime: org.kde.Platform
+runtime-version: '6.6'
+sdk: org.kde.Sdk
+command: karmac
+
+finish-args:
+  - --socket=x11
+  - --share=ipc
+  - --share=network
+  - --device=all
+  - --filesystem=home
+  - --filesystem=/sys/class/hwmon:ro
+  - --filesystem=/sys/class/thermal:ro
+  - --filesystem=/sys/class/drm:ro
+  - --filesystem=/sys/class/powercap:ro
+
+modules:
+  - name: shiboken6
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps shiboken6-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        path: /tmp/pyside6-wheels/shiboken6-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+
+  - name: pyside6-essentials
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps PySide6_Essentials-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        path: /tmp/pyside6-wheels/PySide6_Essentials-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+
+  - name: pyside6-addons
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps PySide6_Addons-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        path: /tmp/pyside6-wheels/PySide6_Addons-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+
+  - name: pyside6
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps PySide6-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        path: /tmp/pyside6-wheels/PySide6-6.7.0-cp39-abi3-manylinux_2_28_x86_64.whl
+
+  - name: certifi
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps certifi-2026.5.20-py3-none-any.whl
+    sources:
+      - type: file
+        path: /tmp/requests-deps/certifi-2026.5.20-py3-none-any.whl
+
+  - name: idna
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps idna-3.17-py3-none-any.whl
+    sources:
+      - type: file
+        path: /tmp/requests-deps/idna-3.17-py3-none-any.whl
+
+  - name: urllib3
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps urllib3-2.7.0-py3-none-any.whl
+    sources:
+      - type: file
+        path: /tmp/requests-deps/urllib3-2.7.0-py3-none-any.whl
+
+  - name: charset-normalizer
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps charset_normalizer-3.4.7-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        path: /tmp/requests-deps2/charset_normalizer-3.4.7-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+
+  - name: requests
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps requests-2.34.2-py3-none-any.whl
+    sources:
+      - type: file
+        path: /tmp/extra-wheels/requests-2.34.2-py3-none-any.whl
+
+  - name: psutil
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+    sources:
+      - type: file
+        path: /tmp/extra-wheels/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+
+  - name: speedtest-cli
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps speedtest_cli-2.1.3-py2.py3-none-any.whl
+    sources:
+      - type: file
+        path: /tmp/extra-wheels/speedtest_cli-2.1.3-py2.py3-none-any.whl
+
+  - name: karmac
+    buildsystem: simple
+    build-commands:
+      - cd SRC && pip3 install --prefix=/app --no-deps .
+      - install -Dm755 SRC/main.py /app/bin/karmac-main.py
+      - printf '#!/bin/bash\nexec python3 /app/bin/karmac-main.py "$@"\n' > /app/bin/karmac
+      - chmod +x /app/bin/karmac
+      - install -Dm644 io.gitlab.team_karmac1.KarmacDashboard.desktop /app/share/applications/io.gitlab.team_karmac1.KarmacDashboard.desktop
+      - install -Dm644 io.gitlab.team_karmac1.KarmacDashboard.metainfo.xml /app/share/metainfo/io.gitlab.team_karmac1.KarmacDashboard.metainfo.xml
+      - install -Dm644 Assets/Karmac_Logo.svg /app/share/icons/hicolor/scalable/apps/io.gitlab.team_karmac1.KarmacDashboard.svg
+    sources:
+      - type: git
+        url: https://gitlab.com/team.karmac1/Karmac-dashboard.git
+        branch: main
