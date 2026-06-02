@@ -39,35 +39,33 @@ def get_network_info() -> dict:
     return result
 
 
-def get_ping(host: str = "9.9.9.9") -> dict:
-    """Measure latency by timing a TCP connection — works inside Flatpak."""
-    import socket
-    import time
-    for port in [443, 80, 53]:
-        try:
-            start = time.monotonic()
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(3)
-            sock.connect_ex((host, port))
-            ms = (time.monotonic() - start) * 1000
-            sock.close()
-            if ms > 0:
-                if ms < 20:
-                    quality = "Excellent"
-                    color   = "#06d6a0"
-                elif ms < 50:
-                    quality = "Good"
-                    color   = "#06d6a0"
-                elif ms < 100:
-                    quality = "Fair"
-                    color   = "#ffd000"
-                else:
-                    quality = "Poor"
-                    color   = "#ff4d6d"
-                return {"ms": ms, "quality": quality, "color": color, "success": True}
-        except Exception:
-            continue
-    return {"success": False, "error": "Timeout"}
+def get_ping(host: str = "8.8.8.8") -> dict:
+    """Ping a host and return latency in ms."""
+    try:
+        result = subprocess.run(
+            ["ping", "-c", "1", "-W", "2", host],
+            capture_output=True, text=True, timeout=5
+        )
+        if result.returncode == 0:
+            for line in result.stdout.splitlines():
+                if "time=" in line:
+                    ms = float(line.split("time=")[1].split()[0])
+                    if ms < 20:
+                        quality = "Excellent"
+                        color   = "#06d6a0"
+                    elif ms < 50:
+                        quality = "Good"
+                        color   = "#06d6a0"
+                    elif ms < 100:
+                        quality = "Fair"
+                        color   = "#ffd000"
+                    else:
+                        quality = "Poor"
+                        color   = "#ff4d6d"
+                    return {"ms": ms, "quality": quality, "color": color, "success": True}
+        return {"success": False, "error": "No response"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 
 def format_speed(bytes_per_sec: float) -> str:
