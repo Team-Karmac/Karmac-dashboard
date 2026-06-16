@@ -1,0 +1,136 @@
+# Karmac Dashboard — GitLab CI/CD Pipeline
+# Runs security scanning, dependency auditing, and SBOM generation on every commit.
+
+stages:
+  - security
+  - quality
+  - sbom
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+  PYTHON_VERSION: "3.11"
+
+# ── Cache pip downloads between jobs ──────────────────────────────────────────
+.pip_cache:
+  cache:
+    key: pip-$CI_COMMIT_REF_SLUG
+    paths:
+      - .pip-cache/
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STAGE 1: SECURITY
+# ══════════════════════════════════════════════════════════════════════════════
+
+dependency_audit:
+  stage: security
+  image: python:3.11-slim
+  extends: .pip_cache
+  script:
+    - pip install pip-audit --quiet
+    - pip install -r SRC/requirements.txt --quiet
+    - echo "=== Auditing dependencies for known vulnerabilities ==="
+    - pip-audit --requirement SRC/requirements.txt --format=json --output=pip-audit-report.json || true
+    - pip-audit --requirement SRC/requirements.txt
+  artifacts:
+    when: always
+    paths:
+      - pip-audit-report.json
+    reports:
+      dependency_scanning: pip-audit-report.json
+    expire_in: 30 days
+  allow_failure: false
+
+secret_detection:
+  stage: security
+  image: python:3.11-slim
+  script:
+    - pip install detect-secrets --quiet
+    - echo "=== Scanning for accidentally committed secrets ==="
+    - detect-secrets scan --all-files --exclude-files '\.git/.*' > secrets-report.json
+    - python3 -c "
+      import json, sys
+      with open('secrets-report.json') as f:
+          data = json.load(f)
+      results = data.get('results', {})
+      if results:
+          print('WARNING: Potential secrets detected:')
+          for file, findings in results.items():
+              for finding in findings:
+                  print(f'  {file}: {finding[\"type\"]}')
+          sys.exit(1)
+      else:
+          print('No secrets detected.')
+      "
+  artifacts:
+    when: always
+    paths:
+      - secrets-report.json
+    expire_in: 30 days
+  allow_failure: false
+
+static_analysis:
+  stage: security
+  image: python:3.11-slim
+  extends: .pip_cache
+  script:
+    - pip install bandit --quiet
+    - echo "=== Running Bandit static security analysis ==="
+    - bandit -r SRC/ -f json -o bandit-report.json --severity-level medium || true
+    - bandit -r SRC/ --severity-level medium
+  artifacts:
+    when: always
+    paths:
+      - bandit-report.json
+    expire_in: 30 days
+  allow_failure: false
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STAGE 2: QUALITY
+# ══════════════════════════════════════════════════════════════════════════════
+
+lint:
+  stage: quality
+  image: python:3.11-slim
+  extends: .pip_cache
+  script:
+    - pip install flake8 --quiet
+    - echo "=== Running flake8 code quality check ==="
+    - flake8 SRC/ --max-line-length=120 --exclude=SRC/.git --statistics
+  allow_failure: true
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STAGE 3: SBOM
+# ══════════════════════════════════════════════════════════════════════════════
+
+generate_sbom:
+  stage: sbom
+  image: python:3.11-slim
+  extends: .pip_cache
+  script:
+    - pip install cyclonedx-bom --quiet
+    - pip install -r SRC/requirements.txt --quiet
+    - echo "=== Generating Software Bill of Materials (SBOM) ==="
+    - cyclonedx-py requirements SRC/requirements.txt --output-format json --outfile sbom.json
+    - echo "=== SBOM Summary ==="
+    - python3 -c "
+      import json
+      with open('sbom.json') as f:
+          sbom = json.load(f)
+      components = sbom.get('components', [])
+      print(f'Total components: {len(components)}')
+      for c in components:
+          name = c.get('name', 'unknown')
+          version = c.get('version', 'unknown')
+          licenses = [l.get('license', {}).get('id', 'unknown') for l in c.get('licenses', [])]
+          lic = ', '.join(licenses) if licenses else 'unknown'
+          print(f'  {name} {version} ({lic})')
+      "
+  artifacts:
+    when: always
+    paths:
+      - sbom.json
+    expire_in: 90 days
+  allow_failure: false
+  only:
+    - main
+    - tags
