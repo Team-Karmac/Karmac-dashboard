@@ -5,7 +5,7 @@ Displays upload/download speeds, connection info, ping/latency, and speed test.
 
 import psutil
 import time
-import subprocess
+import re
 import threading
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget, QPushButton
 from PySide6.QtCore import Qt, QTimer, Signal, QObject
@@ -39,18 +39,35 @@ def get_network_info() -> dict:
     return result
 
 
+def _validate_host(host: str) -> bool:
+    """Validate that a host is a safe hostname or IP address."""
+    # Allow valid IPv4 addresses
+    ipv4 = re.compile(r'^(\d{1,3}\.){3}\d{1,3}$')
+    if ipv4.match(host):
+        parts = host.split('.')
+        return all(0 <= int(p) <= 255 for p in parts)
+    # Allow valid hostnames (letters, digits, hyphens, dots)
+    hostname = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9\.\-]{0,253}[a-zA-Z0-9]$')
+    return bool(hostname.match(host))
+
+
 def get_ping(host: str = "9.9.9.9") -> dict:
     """Measure latency by timing a TCP connection — works inside Flatpak."""
     import socket
     import time
+
+    # Validate host before connecting
+    if not _validate_host(host):
+        return {"success": False, "error": "Invalid host"}
+
     for port in [443, 53]:
+        sock = None
         try:
             start = time.monotonic()
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(3)
             sock.connect_ex((host, port))
             ms = (time.monotonic() - start) * 1000
-            sock.close()
             if ms < 2000:
                 if ms < 20:
                     quality = "Excellent"
@@ -67,6 +84,12 @@ def get_ping(host: str = "9.9.9.9") -> dict:
                 return {"ms": ms, "quality": quality, "color": color, "success": True}
         except Exception:
             continue
+        finally:
+            if sock is not None:
+                try:
+                    sock.close()
+                except Exception:
+                    pass
     return {"success": False, "error": "Timeout"}
 
 
@@ -88,7 +111,7 @@ class SpeedTestWorker(QObject):
             import speedtest
             st = speedtest.Speedtest()
             st.get_best_server()
-            download = st.download() / 1_000_000  # Convert to Mbps
+            download = st.download() / 1_000_000
             upload   = st.upload() / 1_000_000
             self.finished.emit({
                 "success":  True,
@@ -97,6 +120,19 @@ class SpeedTestWorker(QObject):
             })
         except Exception as e:
             self.finished.emit({"success": False, "error": str(e)})
+
+
+class PingWorker(QObject):
+    """Runs ping in background thread and emits result via signal."""
+    result_ready = Signal(dict)
+
+    def __init__(self, host: str):
+        super().__init__()
+        self.host = host
+
+    def run(self):
+        result = get_ping(self.host)
+        self.result_ready.emit(result)
 
 
 class NetworkPanel(BasePanel):
@@ -118,9 +154,9 @@ class NetworkPanel(BasePanel):
         self._speed_btn       = None
         self._speed_worker    = None
         self._ping_timer      = None
+        self._ping_worker     = None
+        self._ping_thread     = None
         super().__init__(settings, title="Network", parent=parent)
-        # Delay ping start to allow network to be ready
-        from PySide6.QtCore import QTimer
         QTimer.singleShot(3000, self._start_ping_timer)
 
     def build_content(self, layout: QVBoxLayout):
@@ -166,7 +202,6 @@ class NetworkPanel(BasePanel):
         ul_layout.addStretch()
         ul_layout.addWidget(self._upload_label)
 
-        # Interface + status
         self._interface_label = self.make_unit_label("")
         self._status_label    = self.make_unit_label("")
 
@@ -178,17 +213,15 @@ class NetworkPanel(BasePanel):
 
         # Ping section
         ping_header = QLabel("PING")
-        ping_header.setStyleSheet(
-            "color: rgba(240,240,255,0.35); font-size: 10px;"
-            "font-weight: 700; letter-spacing: 0.1em;"
-        )
+        ping_header.setObjectName("panel-unit")
+        ping_header.setStyleSheet("font-size: 10px; font-weight: 700; letter-spacing: 0.1em;")
 
         ping_row = QWidget()
         ping_layout = QHBoxLayout(ping_row)
         ping_layout.setContentsMargins(0, 0, 0, 0)
         ping_layout.setSpacing(8)
 
-        ping_host = self.settings._data.get("network", {}).get("ping_host", "8.8.8.8")
+        ping_host = self.settings._data.get("network", {}).get("ping_host", "9.9.9.9")
         self._ping_host_label = QLabel(ping_host)
         self._ping_host_label.setObjectName("panel-subtitle")
 
@@ -207,10 +240,8 @@ class NetworkPanel(BasePanel):
 
         # Speed test section
         speed_header = QLabel("SPEED TEST")
-        speed_header.setStyleSheet(
-            "color: rgba(240,240,255,0.35); font-size: 10px;"
-            "font-weight: 700; letter-spacing: 0.1em;"
-        )
+        speed_header.setObjectName("panel-unit")
+        speed_header.setStyleSheet("font-size: 10px; font-weight: 700; letter-spacing: 0.1em;")
 
         speed_results = QWidget()
         speed_layout  = QHBoxLayout(speed_results)
@@ -248,18 +279,25 @@ class NetworkPanel(BasePanel):
         self._update_ping()
 
     def _update_ping(self):
-        """Update ping in a background thread."""
-        host = self.settings._data.get("network", {}).get("ping_host", "8.8.8.8")
-        def ping_thread():
-            result = get_ping(host)
-            if result.get("success"):
-                self._ping_label.setText(f"{result['ms']:.0f} ms  {result['quality']}")
-                self._ping_label.setStyleSheet(f"color: {result['color']};")
-            else:
-                self._ping_label.setText("Timeout")
-                self._ping_label.setStyleSheet("color: rgba(240,240,255,0.3);")
-        t = threading.Thread(target=ping_thread, daemon=True)
-        t.start()
+        """Update ping using a background thread with proper signal/slot safety."""
+        host = self.settings._data.get("network", {}).get("ping_host", "9.9.9.9")
+        self._ping_worker = PingWorker(host)
+        self._ping_worker.result_ready.connect(self._on_ping_result)
+        self._ping_thread = threading.Thread(
+            target=self._ping_worker.run, daemon=True
+        )
+        self._ping_thread.start()
+
+    def _on_ping_result(self, result: dict):
+        """Update ping UI — called in main thread via signal."""
+        if self._ping_label is None:
+            return
+        if result.get("success"):
+            self._ping_label.setText(f"{result['ms']:.0f} ms  {result['quality']}")
+            self._ping_label.setStyleSheet(f"color: {result['color']};")
+        else:
+            self._ping_label.setText("Timeout")
+            self._ping_label.setStyleSheet("color: rgba(128,128,128,0.6);")
 
     def _run_speed_test(self):
         """Run internet speed test in background."""
