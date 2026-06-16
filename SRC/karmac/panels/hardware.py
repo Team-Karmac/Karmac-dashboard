@@ -141,6 +141,7 @@ def get_motherboard() -> str:
 
 
 def get_os_info() -> str:
+    """Get OS name — checks host OS first when running in Flatpak."""
     for path in ["/run/host/os-release", "/var/run/host/os-release", "/etc/os-release"]:
         try:
             with open(path) as f:
