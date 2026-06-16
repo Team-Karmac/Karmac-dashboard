@@ -143,11 +143,17 @@ class NethogsFetcher(QObject):
     def stop(self):
         self._running = False
 
+    @staticmethod
+    def _is_valid_interface(name: str) -> bool:
+        """Validate network interface name against safe pattern."""
+        import re
+        return bool(re.match(r'^[a-zA-Z0-9][a-zA-Z0-9@:._-]{0,15}$', name))
+
     def _run(self):
         while self._running:
             try:
                 cmd = ["sudo", "nethogs", "-t", "-c", "2", "-d", "1"]
-                if self.interface:
+                if self.interface and self._is_valid_interface(self.interface):
                     cmd.append(self.interface)
 
                 result = subprocess.run(
