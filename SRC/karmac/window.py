@@ -19,7 +19,7 @@ from karmac.panels.temperature import TemperaturePanel
 from karmac.panels.ram import RamPanel
 from karmac.panels.drives import DrivesPanel
 from karmac.panels.cpu_cores import CpuCoresPanel
-from karmac.panels.hardware import HardwarePanel, get_cpu_name, get_gpu_name, get_ram_details, get_ram_total, get_ram_speed, get_storage_total, get_motherboard, get_os_info, get_kernel_version, get_desktop_environment, get_display_info, get_drive_details
+from karmac.panels.hardware import HardwarePanel, get_cpu_name, get_gpu_name, get_ram_details, get_ram_total, get_ram_speed, get_storage_total, get_motherboard, get_bios_info, get_os_info, get_kernel_version, get_desktop_environment, get_display_info, get_drive_details
 from karmac.panels.gpu_usage import GpuUsagePanel
 from karmac.panels.power import PowerPanel
 from karmac.panels.fps import FpsPanel
@@ -243,6 +243,7 @@ class KarmacWindow(QMainWindow):
                 ("CPU",     get_cpu_name()),
                 ("GPU",     gpu_name),
                 ("Board",   get_motherboard()),
+                ("BIOS",    get_bios_info()),
                 ("OS",      get_os_info()),
                 ("Kernel",  get_kernel_version()),
                 ("Desktop", get_desktop_environment()),
