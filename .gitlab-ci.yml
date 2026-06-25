@@ -114,7 +114,7 @@ generate_sbom:
     - pip install cyclonedx-bom --quiet
     - pip install -r SRC/requirements.txt --quiet
     - echo "=== Generating Software Bill of Materials (SBOM) ==="
-    - cyclonedx-py requirements SRC/requirements.txt --output-format json --outfile sbom.json
+    - pip freeze --local | cyclonedx-py requirements - --output-format json --output-file sbom.json
     - echo "=== SBOM Summary ==="
     - |
       python3 << 'PYEOF'
