@@ -27,9 +27,10 @@ setup(
     packages=find_packages(),
     python_requires=">=3.10",
     install_requires=[
-        "PySide6>=6.5.0",
-        "requests>=2.28.0",
-        "psutil>=5.9.0",
+        "PySide6>=6.7.0",
+        "requests>=2.34.2",
+        "psutil>=7.2.2",
+        "speedtest-cli>=2.1.3",
     ],
     entry_points={
         "console_scripts": [
