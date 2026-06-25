@@ -2,6 +2,8 @@
 
 First of all — thank you for your interest in contributing to Karmac! Every contribution, no matter how small, helps move the project forward.
 
+---
+
 ## How This Project Uses AI
 
 Development is assisted by AI tooling (Claude, Anthropic) for things like architecture
@@ -17,25 +19,30 @@ In practice, that means:
 - Commits represent logical units of work, not entire sessions dumped as one commit
 - If a change can't be explained in plain language, it isn't ready to ship
 
+
 ## Who Can Contribute?
 
 Everyone is welcome. You don't need to be an expert developer to contribute to Karmac. There are many ways to help:
 
-* Developers — write code, fix bugs, build new panels
-* Designers — improve the UI, suggest visual enhancements
-* Translators — help bring Karmac to new languages
-* Testers — run Karmac on different hardware and report issues
-* Writers — improve documentation, guides, and the wiki
-* Ideas — suggest features or improvements via GitLab Issues
+- **Developers** — write code, fix bugs, build new panels
+- **Designers** — improve the UI, suggest visual enhancements
+- **Translators** — help bring Karmac to new languages
+- **Testers** — run Karmac on different hardware and report issues
+- **Writers** — improve documentation, guides, and the wiki
+- **Ideas** — suggest features or improvements via GitLab Issues
+
+---
 
 ## Code of Conduct
 
 Karmac is a welcoming, inclusive project. We ask that all contributors:
 
-* Be respectful and constructive in all communications
-* Welcome newcomers and be patient with those still learning
-* Focus on the project and its goals, not personal disagreements
-* Give credit where credit is due
+- Be respectful and constructive in all communications
+- Welcome newcomers and be patient with those still learning
+- Focus on the project and its goals, not personal disagreements
+- Give credit where credit is due
+
+---
 
 ## Getting Started
 
@@ -43,32 +50,31 @@ Karmac is a welcoming, inclusive project. We ask that all contributors:
 
 Before contributing code, make sure you have the following installed:
 
-* Python 3.10 or higher
-* PySide6 (Qt for Python)
-* Git
+- Python 3.10 or higher
+- PySide6 (Qt for Python)
+- Git
 
 ### Setting Up Your Development Environment
 
 1. Fork the repository on GitLab
 2. Clone your fork to your local machine:
 
-```
-git clone https://gitlab.com/Team.Karmac/Karmac-dashboard.git
-```
-
+   ```
+   git clone https://gitlab.com/Team.Karmac/Karmac-dashboard.git
+   ```
 3. Navigate into the project directory:
 
-```
-cd Karmac-dashboard
-```
-
+   ```
+   cd Karmac-dashboard
+   ```
 4. Install the required dependencies:
 
-```
-pip install PySide6
-```
-
+   ```
+   pip install PySide6
+   ```
 5. Run Karmac locally to make sure everything works before making changes
+
+---
 
 ## How to Submit a Contribution
 
@@ -90,29 +96,33 @@ pip install PySide6
 1. Open an Issue first to discuss the change before writing code — this avoids wasted effort
 2. Create a new branch for your change:
 
-```
-git checkout -b feature/your-feature-name
-```
-
+   ```
+   git checkout -b feature/your-feature-name
+   ```
 3. Write clean, readable, well-commented Python code
 4. Test your changes thoroughly before submitting
 5. Submit a Merge Request (MR) with a clear description of what you changed and why
 6. Reference the related Issue in your MR description
 
-### Code Style Guidelines
+---
 
-* Follow PEP 8 Python style conventions
-* Use clear, descriptive variable and function names
-* Comment your code where the intent isn't immediately obvious
-* Keep functions small and focused on a single task
-* No unnecessary dependencies — keep Karmac lean
-* Any subprocess call must use argument-list form, never shell string interpolation
-* Any value used in a file path or subprocess argument must be validated first
+## Code Style Guidelines
+
+- Follow PEP 8 Python style conventions
+- Use clear, descriptive variable and function names
+- Comment your code where the intent isn't immediately obvious
+- Keep functions small and focused on a single task
+- No unnecessary dependencies — keep Karmac lean
+- Any subprocess call must use argument-list form, never shell string interpolation
+- Any value used in a file path or subprocess argument must be validated first
+
+---
 
 ## Security Issues
 
-Please don't open a public Issue for security vulnerabilities. See
-[SECURITY.md](SECURITY.md) for how to report these privately.
+Please don't open a public Issue for security vulnerabilities. See [SECURITY.md](SECURITY.md) for how to report these privately.
+
+---
 
 ## Translations
 
@@ -122,15 +132,14 @@ Karmac launches in English and welcomes community translations. If you would lik
 2. We will provide guidance on how translation files are structured
 3. All translators are credited within the application
 
-## License
-
-By contributing, you agree that your contributions will be licensed under the same
-GPL-3.0-or-later license that covers this project.
+---
 
 ## Questions?
 
 If you have any questions, open an Issue on GitLab and label it as a question. We're happy to help.
 
-Thank you for helping make Karmac better for everyone.
+---
+
+*Thank you for helping make Karmac better for everyone.*
 
 — Team Karmac
