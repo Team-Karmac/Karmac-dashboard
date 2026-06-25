@@ -31,7 +31,7 @@ def get_drive_info() -> list:
             skip_paths = (
                 '/snap/', '/boot', '/run/', '/etc/', '/usr/',
                 '/var/', '/lib', '/bin', '/sbin', '/opt', '/srv',
-                '/tmp', '/lost+found', '/cdrom', '/swapfile', '/timeshift'
+                '/tmp', '/lost+found', '/cdrom', '/swapfile', '/timeshift'  # nosec B108
             )
             if any(skip in p.mountpoint for skip in skip_paths):
                 continue
