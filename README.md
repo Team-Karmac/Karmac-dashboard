@@ -10,6 +10,18 @@ Karmac is a free and open source desktop dashboard for Linux. It gives everyday 
 
 ---
 
+## How This Project Uses AI
+
+Development is assisted by AI tooling (Claude, Anthropic) for things like architecture
+discussion, code generation, documentation, and test scaffolding. Every design decision,
+every line of code, and every release is reviewed and tested by Team Karmac before it
+ships. AI is a development partner here, not an autonomous contributor — Team Karmac is
+responsible for the correctness, security, and quality of everything in this repository,
+regardless of how a given change was drafted. See [CONTRIBUTING.md](CONTRIBUTING.md) for
+the review process applied to every change.
+
+---
+
 ## Why Karmac?
 
 | | Karmac | Conky | Grafana | Homepage/Homarr |
@@ -250,6 +262,7 @@ cat ~/.config/karmac/karmac.log
 - **AUR package** — for Arch/Manjaro users
 - **Battery status** — for laptop users
 - **Multi-monitor support** — different dashboards on different screens
+- **Built-in update checker** — notify users when a new version is available, comparing against the latest GitLab release tag
 
 ---
 
