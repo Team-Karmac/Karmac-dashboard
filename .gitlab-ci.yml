@@ -47,20 +47,24 @@ secret_detection:
     - pip install detect-secrets --quiet
     - echo "=== Scanning for accidentally committed secrets ==="
     - detect-secrets scan --all-files --exclude-files '\.git/.*' > secrets-report.json
-    - python3 -c "
-      import json, sys
+    - |
+      python3 << 'PYEOF'
+      import json
+      import sys
+
       with open('secrets-report.json') as f:
           data = json.load(f)
+
       results = data.get('results', {})
       if results:
           print('WARNING: Potential secrets detected:')
           for file, findings in results.items():
               for finding in findings:
-                  print(f'  {file}: {finding[\"type\"]}')
+                  print('  ' + file + ': ' + finding['type'])
           sys.exit(1)
       else:
           print('No secrets detected.')
-      "
+      PYEOF
   artifacts:
     when: always
     paths:
@@ -112,19 +116,22 @@ generate_sbom:
     - echo "=== Generating Software Bill of Materials (SBOM) ==="
     - cyclonedx-py requirements SRC/requirements.txt --output-format json --outfile sbom.json
     - echo "=== SBOM Summary ==="
-    - python3 -c "
+    - |
+      python3 << 'PYEOF'
       import json
+
       with open('sbom.json') as f:
           sbom = json.load(f)
+
       components = sbom.get('components', [])
-      print(f'Total components: {len(components)}')
+      print('Total components: ' + str(len(components)))
       for c in components:
           name = c.get('name', 'unknown')
           version = c.get('version', 'unknown')
           licenses = [l.get('license', {}).get('id', 'unknown') for l in c.get('licenses', [])]
           lic = ', '.join(licenses) if licenses else 'unknown'
-          print(f'  {name} {version} ({lic})')
-      "
+          print('  ' + name + ' ' + version + ' (' + lic + ')')
+      PYEOF
   artifacts:
     when: always
     paths:
