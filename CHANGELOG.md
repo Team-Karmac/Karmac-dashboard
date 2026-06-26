@@ -2,6 +2,35 @@
 
 ---
 
+## v3.0.2 — June 2026
+
+### Security
+- Fixed a socket leak in the network ping check — sockets are now closed in a `finally` block even if the connection attempt fails
+- Added input validation for the ping host and network interface settings, so a malformed or malicious value in settings.json can't be used for injection
+- Fixed a thread-safety issue where ping results were updating the UI directly from a background thread; now goes through a proper Qt signal/slot
+- Added a documented, narrowly-scoped bandit suppression for a false-positive temp-directory finding in the drives panel (the flagged string is a mount-path comparison, not a directory write)
+- Added SECURITY.md and THREAT_MODEL.md, documenting every outbound connection, every elevated-privilege command, and the actual threats considered during development
+- Added a CI pipeline running dependency auditing, secret scanning, static security analysis, and SBOM generation on every commit — none of this existed before this release
+
+### Bug Fixes
+- Fixed the Temperature panel's display format setting (Celsius only / Fahrenheit only / Both) — the panel was silently reading the wrong settings key and always rendering both units regardless of what was selected in Settings
+- Fixed the hardware sidebar's BIOS field — added BIOS vendor, version, and release date, and fixed the actual code path that builds the sidebar (a separate, duplicated spec list inside window.py, not the HardwarePanel class most of the codebase assumes is in use)
+- Fixed a hardcoded color in the sidebar's spec row labels that made them unreadable in light theme
+- Removed two redundant local `import re` statements and an unnecessary `global` declaration in the network traffic panel — no behavior change, cleanup only
+- Fixed the Flatpak manifest's runtime version, which had quietly gone end-of-life; updated to a currently supported KDE runtime
+- Replaced a shell-script-generation pattern in the Flatpak manifest with Flatpak's proper `type: script` source, per upstream reviewer feedback
+- Fixed Python 3.12 compatibility in the Flatpak build (charset-normalizer wheel selection, build-isolation handling)
+- Fixed the SBOM generation step to record actually-installed package versions instead of the version floors from requirements.txt
+
+### Documentation & Project Integrity
+- Removed two orphaned, stale duplicate copies of requirements.txt (root and SRC/karmac/) that had drifted out of sync with the one actually in use; updated setup.py to match the real, current dependency versions
+- Added an AI-disclosure section to README.md and merged AI-disclosure language into the existing CONTRIBUTING.md, rather than overwriting either with a partial draft
+- Established a verification practice going forward: before editing any existing document, pull and diff against its actual current content rather than rewriting from memory
+
+This release was prompted by community review feedback on the Flathub submission. Beyond the specific issues raised, the review process surfaced a real, previously undiscovered settings bug (Temperature display format) and a real architectural gap (duplicated sidebar logic) — both fixed here. The CI pipeline added in this release had never successfully completed a single run prior to this fix; every commit before this one was silently failing pipeline validation due to a YAML syntax error in the original configuration.
+
+---
+
 ## v3.0.1 — June 2026
 
 ### Light Theme Fixes
