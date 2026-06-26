@@ -30,7 +30,6 @@ _traffic_history = {}
 def clean_proc_name(proc_path: str) -> str:
     """Extract and clean process name from nethogs path."""
     # Skip IP addresses
-    import re
     if re.match(r"^\d+\.\d+\.\d+\.\d+", proc_path):
         return None
     # Skip unknown
@@ -63,7 +62,6 @@ def clean_proc_name(proc_path: str) -> str:
 
 def parse_nethogs_output(output: str) -> list:
     """Parse nethogs tracing output into list of process dicts."""
-    global _traffic_history
     current = {}
 
     for line in output.strip().splitlines():
@@ -146,7 +144,6 @@ class NethogsFetcher(QObject):
     @staticmethod
     def _is_valid_interface(name: str) -> bool:
         """Validate network interface name against safe pattern."""
-        import re
         return bool(re.match(r'^[a-zA-Z0-9][a-zA-Z0-9@:._-]{0,15}$', name))
 
     def _run(self):
