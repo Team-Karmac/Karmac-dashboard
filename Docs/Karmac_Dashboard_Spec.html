@@ -84,10 +84,21 @@
   <p>Karmac is a free and open source desktop dashboard application for Linux. It gives everyday users a single, beautiful, organized view of their system's health and key personal information — without requiring any technical knowledge to set up or use.</p>
   <p>Karmac is built on a simple belief: Linux desktop users deserve a polished, privacy-respecting dashboard that works for everyone, not just developers and power users.</p>
 
+  <h2>The Problem Karmac Solves</h2>
+  <p>Linux has long had tools for monitoring system performance and displaying personal information, but they share common shortcomings:</p>
+  <ul>
+    <li>They are built for technical users and assume comfort with configuration files and command-line tools</li>
+    <li>They are either too minimal or too complex, with little middle ground</li>
+    <li>They lack visual polish and feel out of place on a modern desktop</li>
+    <li>They rarely combine system monitoring and personal information in one cohesive experience</li>
+    <li>Server and homelab dashboards exist in abundance, but nothing comparable exists for the everyday Linux desktop user</li>
+  </ul>
+  <p>Karmac fills this gap.</p>
+
   <h2>Who is Karmac For?</h2>
   <ul>
     <li>Everyday users who are new to Linux and want something that just works</li>
-    <li>Privacy-conscious users switching away from proprietary operating systems</li>
+    <li>Privacy-conscious users switching away from proprietary operating systems like Windows and macOS</li>
     <li>Experienced Linux users who want a cleaner, more unified dashboard experience</li>
     <li>Gamers and enthusiasts who want real-time hardware monitoring in a friendly interface</li>
   </ul>
@@ -95,92 +106,164 @@
   <h2>Core Philosophy</h2>
   <ul>
     <li><span style="color:#ffffff">Privacy first</span> — Karmac collects no user data, sends nothing to external servers, and never will</li>
-    <li><span style="color:#ffffff">Free and open source</span> — licensed under GPL v3, free forever with no premium tier</li>
+    <li><span style="color:#ffffff">Free and open source</span> — licensed under an open source license, free forever with no premium tier</li>
     <li><span style="color:#ffffff">Approachable</span> — designed for humans, not just power users</li>
     <li><span style="color:#ffffff">Honest</span> — what you see is what you get; no hidden features, no upsells, no ads</li>
     <li><span style="color:#ffffff">Community driven</span> — built in the open, with contributions welcomed from anyone</li>
   </ul>
 
+  <h2>Features</h2>
+
+  <h3>Launch Behavior</h3>
+  <ul>
+    <li>Launch automatically at system startup, acting as a home screen</li>
+    <li>Launch manually like any other application</li>
+    <li>The user chooses their preferred behavior in settings</li>
+  </ul>
+
+  <h3>Themes</h3>
+  <ul>
+    <li>Full dark mode support</li>
+    <li>Full light mode support</li>
+    <li>Theme selection available in settings</li>
+  </ul>
+
+  <h3>Layout</h3>
+  <ul>
+    <li>Fully customizable — users can rearrange, resize, show, or hide any panel</li>
+    <li>Three column grid layout across four rows</li>
+    <li>Designed to look great out of the box with sensible defaults</li>
+    <li>No configuration files required; everything is managed through the app's settings interface</li>
+  </ul>
+
   <h2>Dashboard Panels (v2.0)</h2>
+  <p>All panels can be toggled and repositioned by the user. Each panel has a unique accent color for instant visual identification.</p>
 
   <h3>Row 1 — Personal and Connectivity</h3>
   <div class="panel-grid">
-    <div class="panel-card"><h4><span class="color-dot" style="background:#4361ee"></span>Clock and Calendar</h4><p>Time, date, and mini calendar with today highlighted in blue.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#06d6a0"></span>Weather</h4><p>Current conditions, high/low, humidity, wind speed, and 3-day forecast.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#9b5de5"></span>Network</h4><p>Live upload/download speeds, ping/latency with quality rating, and internet speed test.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#4361ee"></span>Clock and Calendar</h4><p>Time, date, and mini calendar with today highlighted.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#06d6a0"></span>Weather</h4><p>Current conditions, high/low, humidity, wind, and 3-day forecast.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#9b5de5"></span>Network</h4><p>Live upload/download speeds, ping/latency, and internet speed test.</p></div>
   </div>
 
   <h3>Row 2 — Thermal and Processing</h3>
   <div class="panel-grid">
-    <div class="panel-card"><h4><span class="color-dot" style="background:#ff6d00"></span>Temperature</h4><p>CPU and GPU temperatures in Celsius, Fahrenheit, or both. Color-coded thresholds.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#ffd000"></span>Fan Speeds</h4><p>RPM readings grouped by hardware chip. Zero RPM detection for GPU fans.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#ff006e"></span>CPU Cores</h4><p>Overall usage, per-core activity percentages, and per-core frequencies in GHz.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#ff6d00"></span>Temperature</h4><p>CPU and GPU temperatures — Celsius, Fahrenheit, or both.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#ffd000"></span>Fan Speeds</h4><p>RPM readings grouped by hardware chip with Zero RPM detection.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#ff006e"></span>CPU Cores</h4><p>Overall usage, per-core activity, and per-core frequency.</p></div>
   </div>
 
   <h3>Row 3 — Memory and Storage</h3>
   <div class="panel-grid">
-    <div class="panel-card"><h4><span class="color-dot" style="background:#ff4d6d"></span>System Uptime</h4><p>Time since last boot with boot timestamp.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#00f5d4"></span>RAM Usage</h4><p>Used and available memory with color-coded percentage.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#b5e800"></span>Hard Drives</h4><p>Space used and free for all detected drives. Individual drives toggleable in settings.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#ff4d6d"></span>System Uptime</h4><p>Time since last boot.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#00f5d4"></span>RAM Usage</h4><p>Used/available memory with percentage.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#b5e800"></span>Hard Drives</h4><p>Space used/free for all detected drives.</p></div>
   </div>
 
   <h3>Row 4 — Power and Graphics</h3>
   <div class="panel-grid">
-    <div class="panel-card"><h4><span class="color-dot" style="background:#c77dff"></span>GPU Usage</h4><p>AMD GPU load percentage, VRAM usage, and power draw in watts.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#00b4d8"></span>Power Usage</h4><p>CPU package and GPU power consumption in watts with combined total.</p></div>
-    <div class="panel-card"><h4><span class="color-dot" style="background:#ff6b6b"></span>FPS</h4><p>Live FPS, frametime, CPU/GPU load via MangoHud integration. Shows active game name.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#c77dff"></span>GPU Usage</h4><p>AMD GPU load %, VRAM usage, and power draw.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#00b4d8"></span>Power Usage</h4><p>CPU package and GPU power consumption in watts.</p></div>
+    <div class="panel-card"><h4><span class="color-dot" style="background:#ff6b6b"></span>FPS</h4><p>Live FPS, frametime, CPU/GPU load via MangoHud integration.</p></div>
   </div>
 
+  <h2>Color Palette</h2>
+  <table>
+    <tr><th>Panel</th><th>Color</th><th>Hex</th></tr>
+    <tr><td>Clock</td><td>Blue</td><td>#4361ee</td></tr>
+    <tr><td>Weather</td><td>Green</td><td>#06d6a0</td></tr>
+    <tr><td>Fan Speeds</td><td>Yellow</td><td>#ffd000</td></tr>
+    <tr><td>Network</td><td>Purple</td><td>#9b5de5</td></tr>
+    <tr><td>System Uptime</td><td>Red</td><td>#ff4d6d</td></tr>
+    <tr><td>CPU/GPU Temperature</td><td>Orange</td><td>#ff6d00</td></tr>
+    <tr><td>RAM Usage</td><td>Aquamarine</td><td>#00f5d4</td></tr>
+    <tr><td>Hard Drive Space</td><td>Lime</td><td>#b5e800</td></tr>
+    <tr><td>CPU Core Activity</td><td>Pink</td><td>#ff006e</td></tr>
+    <tr><td>Hardware Brand &amp; Specs</td><td>Brown</td><td>#c17c3a</td></tr>
+    <tr><td>GPU Usage</td><td>Light Violet</td><td>#c77dff</td></tr>
+    <tr><td>Power Usage</td><td>Cyan</td><td>#00b4d8</td></tr>
+    <tr><td>FPS</td><td>Coral</td><td>#ff6b6b</td></tr>
+  </table>
+
   <h2>Sidebar</h2>
-  <p>The navigation sidebar displays full hardware information alongside the Dashboard and Settings navigation buttons. Hardware details include CPU, GPU, motherboard, OS, kernel version, desktop environment, RAM with speed, storage, and display information with resolution and refresh rate.</p>
+  <p>The navigation sidebar displays full hardware information alongside the Dashboard and Settings navigation buttons. Hardware details include CPU, GPU, motherboard, OS, kernel version, desktop environment, RAM, storage, and display information.</p>
 
   <h2>Settings</h2>
   <ul>
     <li><span style="color:#ffffff">Appearance</span> — Theme (Dark/Light), Font Size (Small/Medium/Large)</li>
-    <li><span style="color:#ffffff">Panels</span> — Enable/disable individual panels</li>
+    <li><span style="color:#ffffff">Panels</span> — Enable/disable individual panels; changes take effect after restarting Karmac</li>
     <li><span style="color:#ffffff">Clock</span> — 12/24h format, seconds, date format, timezone</li>
     <li><span style="color:#ffffff">Weather</span> — Location search, temperature units</li>
     <li><span style="color:#ffffff">Network</span> — Ping host configuration</li>
     <li><span style="color:#ffffff">Fan Speeds</span> — Warning/critical RPM thresholds, custom fan labels</li>
-    <li><span style="color:#ffffff">Temperature</span> — Display format, warning/critical thresholds</li>
+    <li><span style="color:#ffffff">Temperature</span> — Display format (Celsius only/Fahrenheit only/Both), warning/critical thresholds</li>
     <li><span style="color:#ffffff">Hard Drives</span> — Show/hide individual drives</li>
-    <li><span style="color:#ffffff">Startup</span> — Launch on login</li>
+    <li><span style="color:#ffffff">Startup</span> — Launch Karmac automatically on login</li>
   </ul>
+
+  <h2>What Karmac Is Not</h2>
+  <ul>
+    <li>Not a server or homelab dashboard</li>
+    <li>Not a widget system requiring manual assembly</li>
+    <li>Not a web application or browser-based tool</li>
+    <li>Not a data collection platform</li>
+    <li>Not a subscription service</li>
+  </ul>
+
+  <h2>Language Support</h2>
+  <p>Karmac launches in English. Additional language translations are welcomed and encouraged from community contributors. All translations are credited within the application.</p>
 
   <h2>Technical Notes</h2>
   <ul>
     <li>Standalone desktop application targeting Linux</li>
-    <li>Written in Python with PySide6 (Qt framework)</li>
+    <li>Written in Python</li>
+    <li>UI built with PySide6 (Qt framework)</li>
     <li>No external server or hosting dependency</li>
-    <li>Weather data from Open-Meteo (free, no API key required)</li>
-    <li>FPS data from MangoHud log files</li>
+    <li>All data is read locally from the system</li>
+    <li>Weather data sourced from Open-Meteo (free, open source, no API key required)</li>
+    <li>FPS data sourced from MangoHud log files</li>
     <li>Power monitoring via RAPL interface</li>
-    <li>Crash logging to ~/.config/karmac/karmac.log</li>
+    <li>Fully open source; primary repository hosted on GitLab, mirrored to GitHub for visibility</li>
     <li>Licensed under GNU General Public License v3 (GPL v3)</li>
+    <li>Crash logging to ~/.config/karmac/karmac.log</li>
   </ul>
 
   <h2>Future Considerations</h2>
+
+  <h3>v4 Architecture</h3>
   <ul>
+    <li><span style="color:#ffffff">Shared metrics service</span> — centralized data collection with a shared cache that panels subscribe to, rather than each panel polling independently. Important for scalability and efficiency on lower-powered hardware</li>
+    <li><span style="color:#ffffff">Consolidate hardware spec sources</span> — the sidebar and the hardware panel currently maintain independent, duplicate lists of the same hardware specs. Should be a single source of truth</li>
+  </ul>
+
+  <h3>Community-Driven Features</h3>
+  <p>The following may be considered based on community feedback:</p>
+  <ul>
+    <li>Plugin/widget framework for community-created panels</li>
+    <li>Theme marketplace</li>
     <li>Currently playing music display</li>
-    <li>Calendar integration</li>
+    <li>Calendar next event — show the next upcoming event from the day in the Clock panel</li>
+    <li>Weather alerts — surface severe weather alerts when reported for the configured location</li>
     <li>System notifications center</li>
     <li>Quick app launcher</li>
     <li>Battery status for laptop users</li>
     <li>Additional language packs</li>
-    <li>Community-contributed themes</li>
     <li>NVIDIA GPU support improvements</li>
+    <li>AppImage packaging</li>
+    <li>AUR package for Arch/Manjaro users</li>
+    <li>Multi-monitor support</li>
+    <li>Built-in update checker — notify users when a new version is available</li>
   </ul>
 
   <h2>Project Identity</h2>
   <table class="identity-table">
     <tr><td>Name</td><td>Karmac Dashboard</td></tr>
     <tr><td>Tagline</td><td><em>Everything you need. Nothing you don't.</em></td></tr>
-    <tr><td>Version</td><td>2.0.0</td></tr>
     <tr><td>Made by</td><td>Team Karmac</td></tr>
     <tr><td>License</td><td>GNU General Public License v3 (GPL v3)</td></tr>
     <tr><td>Primary Repo</td><td>gitlab.com/team.karmac1/Karmac-dashboard</td></tr>
     <tr><td>Mirror</td><td>github.com/Team-Karmac/Karmac-dashboard</td></tr>
-    <tr><td>Community</td><td>GitLab Issues and Discussions</td></tr>
+    <tr><td>Community</td><td>GitLab Issues and Discussions (primary), Matrix (to be added when community grows)</td></tr>
   </table>
 
   <div class="footer">
