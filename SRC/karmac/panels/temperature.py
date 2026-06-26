@@ -109,7 +109,6 @@ class TemperaturePanel(BasePanel):
 
         data = get_temperatures()
         temp_cfg = self.settings._data.get("temperature", {})
-        units = temp_cfg.get("units", "celsius")
         show  = temp_cfg.get("show", "celsius")
         warn  = temp_cfg.get("warning", 70)
         crit  = temp_cfg.get("critical", 90)
@@ -136,7 +135,7 @@ class TemperaturePanel(BasePanel):
 
             for reading in shown[:3]:  # Max 3 CPU readings
                 row = self._make_temp_row(
-                    reading["label"], reading["temp_c"], units, warn, crit
+                    reading["label"], reading["temp_c"], show, warn, crit
                 )
                 self._temp_container.addWidget(row)
                 self._temp_widgets.append(row)
@@ -164,7 +163,7 @@ class TemperaturePanel(BasePanel):
 
             for reading in shown[:2]:  # Max 2 GPU readings
                 row = self._make_temp_row(
-                    reading["label"], reading["temp_c"], units, warn, crit
+                    reading["label"], reading["temp_c"], show, warn, crit
                 )
                 self._temp_container.addWidget(row)
                 self._temp_widgets.append(row)
@@ -180,7 +179,7 @@ class TemperaturePanel(BasePanel):
         )
         return label
 
-    def _make_temp_row(self, label: str, temp_c: float, units: str,
+    def _make_temp_row(self, label: str, temp_c: float, show: str,
                        warn: float, crit: float) -> QWidget:
         row = QWidget()
         row.setMinimumHeight(24)
@@ -192,14 +191,13 @@ class TemperaturePanel(BasePanel):
         name.setObjectName("panel-subtitle")
         name.setMinimumWidth(80)
 
-        # Primary temp in chosen units
-        primary = format_temp(temp_c, units)
-
-        # Secondary temp in other units
-        if units == "fahrenheit":
-            secondary = f"{temp_c}°C"
-        else:
-            secondary = f"{c_to_f(temp_c)}°F"
+        # Build display text based on the selected format
+        if show == "celsius":
+            display_text = f"{temp_c}°C"
+        elif show == "fahrenheit":
+            display_text = f"{c_to_f(temp_c)}°F"
+        else:  # "both"
+            display_text = f"{temp_c}°C  {c_to_f(temp_c)}°F"
 
         # Color based on thresholds
         if temp_c >= crit:
@@ -209,7 +207,7 @@ class TemperaturePanel(BasePanel):
         else:
             color = "#06d6a0"
 
-        temp_label = QLabel(f"{primary}  {secondary}")
+        temp_label = QLabel(display_text)
         temp_label.setObjectName("panel-subtitle")
         temp_label.setAlignment(Qt.AlignRight)
         temp_label.setMinimumWidth(140)
