@@ -217,6 +217,9 @@ The following may be considered based on community feedback:
 - AppImage packaging
 - AUR package for Arch/Manjaro users
 - Multi-monitor support
+- Built-in update checker — notify users when a new version is available
+- Calendar next event — show the next upcoming event from the day in the Clock panel, alongside the existing calendar grid
+- Weather alerts — surface severe weather alerts (storm, heat, freeze warnings) in the Weather panel when Open-Meteo reports one for the configured location
 
 ---
 
