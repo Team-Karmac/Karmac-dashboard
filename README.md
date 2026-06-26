@@ -263,6 +263,9 @@ cat ~/.config/karmac/karmac.log
 - **Battery status** — for laptop users
 - **Multi-monitor support** — different dashboards on different screens
 - **Built-in update checker** — notify users when a new version is available, comparing against the latest GitLab release tag
+- **Consolidate hardware spec sources** — window.py's sidebar and hardware.py's HardwarePanel class independently maintain duplicate lists of the same hardware specs (CPU, GPU, Board, RAM, etc.). Any future field added to one is silently missing from the other unless both are updated by hand. Should be a single source of truth.
+- **Calendar next event** — show the next upcoming event from the day in the Clock panel, alongside the existing calendar grid
+- **Weather alerts** — surface severe weather alerts (storm, heat, freeze warnings) in the Weather panel when Open-Meteo reports one for the configured location
 
 ---
 
