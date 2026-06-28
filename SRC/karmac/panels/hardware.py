@@ -140,6 +140,42 @@ def get_motherboard() -> str:
     return "Unknown"
 
 
+def get_bios_info() -> str:
+    """Get BIOS/UEFI vendor, version, and release date from DMI sysfs."""
+    try:
+        vendor = ""
+        version = ""
+        date = ""
+        if os.path.exists("/sys/class/dmi/id/bios_vendor"):
+            with open("/sys/class/dmi/id/bios_vendor") as f:
+                v = f.read().strip()
+                if v and v not in ("None", "To be filled by O.E.M."):
+                    vendor = v
+        if os.path.exists("/sys/class/dmi/id/bios_version"):
+            with open("/sys/class/dmi/id/bios_version") as f:
+                v = f.read().strip()
+                if v and v not in ("None", "To be filled by O.E.M."):
+                    version = v
+        if os.path.exists("/sys/class/dmi/id/bios_date"):
+            with open("/sys/class/dmi/id/bios_date") as f:
+                v = f.read().strip()
+                if v and v not in ("None", "To be filled by O.E.M."):
+                    date = v
+
+        parts = []
+        if vendor:
+            parts.append(vendor)
+        if version:
+            parts.append(version)
+        if date:
+            parts.append(date)
+        if parts:
+            return "  ".join(parts)
+    except Exception:
+        pass
+    return "Unknown"
+
+
 def get_os_info() -> str:
     """Get OS name — checks host OS first when running in Flatpak."""
     for path in ["/run/host/os-release", "/var/run/host/os-release", "/etc/os-release"]:
@@ -163,14 +199,39 @@ def get_kernel_version() -> str:
 
 
 def get_desktop_environment() -> str:
-    """Get the current desktop environment."""
+    """Get the current desktop environment, with version number when available."""
     de = os.environ.get("XDG_CURRENT_DESKTOP", "")
-    if de:
-        return de
-    de = os.environ.get("DESKTOP_SESSION", "")
-    if de:
-        return de.capitalize()
-    return "Unknown"
+    if not de:
+        de = os.environ.get("DESKTOP_SESSION", "")
+        if de:
+            de = de.capitalize()
+    if not de:
+        return "Unknown"
+
+    # Mint's Cinnamon reports itself as "X-Cinnamon" in XDG_CURRENT_DESKTOP.
+    # The "X-" prefix marks it as a vendor-specific (non-standard) desktop
+    # identifier per the XDG spec, but it's not meaningful to show a user.
+    display_name = de
+    if de.lower() == "x-cinnamon":
+        display_name = "Cinnamon"
+
+    version = ""
+    if display_name == "Cinnamon":
+        try:
+            result = subprocess.run(
+                ["cinnamon", "--version"],
+                capture_output=True, text=True, timeout=2
+            )
+            if result.returncode == 0:
+                match = re.search(r"[\d.]+", result.stdout)
+                if match:
+                    version = match.group(0)
+        except Exception:
+            pass
+
+    if version:
+        return f"{display_name} {version}"
+    return display_name
 
 
 
@@ -443,6 +504,7 @@ class HardwarePanel(BasePanel):
             ("CPU",     get_cpu_name()),
             ("GPU",     get_gpu_name()),
             ("Board",   get_motherboard()),
+            ("BIOS",    get_bios_info()),
             ("OS",      get_os_info()),
             ("Kernel",  get_kernel_version()),
             ("Desktop", get_desktop_environment()),
@@ -512,8 +574,8 @@ class HardwarePanel(BasePanel):
         layout.setSpacing(1)
 
         label_widget = QLabel(label.upper())
+        label_widget.setObjectName("panel-unit")
         label_widget.setStyleSheet(
-            "color: rgba(240,240,255,0.35);"
             "font-size: 9px;"
             "font-weight: 700;"
             "letter-spacing: 0.12em;"
@@ -522,7 +584,6 @@ class HardwarePanel(BasePanel):
         value_widget = QLabel(value)
         value_widget.setObjectName("panel-subtitle")
         value_widget.setWordWrap(True)
-        value_widget.setStyleSheet("color: #f0f0ff;")
 
         layout.addWidget(label_widget)
         layout.addWidget(value_widget)
